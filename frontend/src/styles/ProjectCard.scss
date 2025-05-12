@@ -1,0 +1,24 @@
+@use "./common/variables.scss" as *;
+@use "./common/mixin.scss" as *;
+
+.project-card {
+    background-color: $color-surface;
+    border: 1px solid $color-border;
+    border-radius: $border-radius;
+    padding: $padding;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.02);
+    }
+
+    h3 {
+      margin-bottom: 8px;
+    }
+
+    p {
+      color: $color-muted;
+      font-size: 14px;
+    }
+}

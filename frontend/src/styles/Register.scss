@@ -1,0 +1,40 @@
+@use "./common/variables.scss" as *;
+@use "./common/mixin.scss" as *;
+
+.register-container {
+  @include center-flex;
+  height: 100vh;
+  background-color: $color-bg;
+
+  .register-box {
+    background-color: $color-surface;
+    padding: $padding * 2;
+    border-radius: $border-radius;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    width: 300px;
+
+    h2 {
+      text-align: center;
+      margin-bottom: $padding;
+    }
+
+    .red {
+      border: 2px solid rgb(220, 21, 21);
+    }
+
+    button {
+      width: 100%;
+      padding: $padding / 2;
+      background-color: $color-accent;
+      border: none;
+      border-radius: $border-radius;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+
+      &:hover {
+        background-color: lighten($color-accent, 10%);
+      }
+    }
+  }
+}

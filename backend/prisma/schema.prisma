@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model UserModel {
+  id String @id
+  login String @unique
+  password String
+  name String
+  email String
+  info String
+  projects ProjectModel[] @relation("UserToProject")
+  invited ProjectModel[] @relation("Invites")
+  photoUrl String @default("https://icons.veryicon.com/png/o/miscellaneous/common-icons-31/default-avatar-2.png")
+}
+
+model ProjectModel {
+  id String @id
+  globalKey Int @default(1)
+  date DateTime @default(now())
+  name String
+  description String
+  adminId String
+  users UserModel[] @relation("UserToProject")
+  invites UserModel[] @relation("Invites")
+  blocks BlockModel[]
+  tasks TaskModel[]
+}
+
+model BlockModel {
+  key Int @id
+  name String
+  description String
+  tasks TaskModel[]
+  status Status @default(ToDo)
+  projectId String
+  parentProject ProjectModel @relation(fields: [projectId], references: [id])
+}
+
+model TaskModel {
+  key Int @id
+  name String
+  subtasks SubtaskModel[]
+  status Status @default(ToDo)
+  projectId String
+  parentProject ProjectModel @relation(fields: [projectId], references: [id])
+  blockId Int?
+  parentBlock BlockModel? @relation(fields: [blockId], references: [key])
+}
+
+model SubtaskModel {
+  key Int @id
+  name String
+  status Status @default(ToDo)
+  projectId String
+  taskId Int
+  parentTask TaskModel @relation(fields: [taskId], references: [key])
+}
+
+enum Status {
+  ToDo
+  InProcess
+  Done
+}

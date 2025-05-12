@@ -1,0 +1,37 @@
+@use "./common/variables.scss" as *;
+@use "./common/mixin.scss" as *;
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $padding;
+    background-color: $color-surface;
+    border-bottom: 1px solid $color-border;
+
+    button {
+      width: 10%;
+    }
+  
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .account {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      .username {
+        color: $color-muted;
+      }
+
+      img {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+      }
+    }
+}

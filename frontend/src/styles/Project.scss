@@ -1,0 +1,164 @@
+@use "./common/variables.scss" as *;
+@use "./common/mixin.scss" as *;
+
+.project-page {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  background-color: $color-bg;
+  color: $color-text;
+
+  .request-list {
+    display: flex;
+    flex-direction: column;
+
+    .request-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 10px 10px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .user-photo {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .item-info {
+      flex-grow: 1;
+    }
+
+    .user-name {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #000000;
+      margin: 0;
+    }
+
+    .user-login {
+      font-size: 0.9rem;
+      color: #000000;
+      margin: 0;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .accept,
+    .reject {
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      color: #fff;
+
+      &:hover {
+        opacity: 0.7;
+      }
+
+      &:active {
+        opacity: 0.5;
+      }
+    }
+
+    .accept {
+      background-color: #4caf50;
+    }
+
+    .reject {
+      background-color: #f44336;
+    }
+  }
+
+  .project-main {
+    padding: 20px;
+
+    .project-info {
+      .project-text {
+        font-size: 22px;
+        font-weight: bold;
+      }
+    }
+  }
+
+  .project-actions {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    width: 80px;
+    align-items: center;
+    padding: 10px;
+    background-color: $color-surface;
+    border-bottom: 1px solid $color-border;
+
+    button {
+      background-color: $color-accent;
+      color: white;
+      border: none;
+      width: 50px;
+      height: 50px;
+      font-size: 30px;
+      border-radius: $border-radius;
+      cursor: pointer;
+
+      &:hover {
+        background-color: lighten($color-accent, 10%);
+      }
+    }
+  }
+
+  .project-content {
+    flex: 1;
+    padding: $padding;
+    overflow-y: auto;
+
+    .section {
+      margin-bottom: $padding * 2;
+
+      h2 {
+        margin-bottom: $padding / 2;
+        font-size: 18px;
+        border-bottom: 1px solid $color-border;
+        padding-bottom: 6px;
+      }
+
+      .task-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: $padding;
+
+        .task-card {
+          background-color: $color-surface;
+          padding: $padding;
+          border-radius: $border-radius;
+          border: 1px solid $color-border;
+          transition: transform 0.2s ease;
+
+          &:hover {
+            transform: scale(1.02);
+          }
+
+          .title {
+            font-weight: bold;
+            margin-bottom: 4px;
+          }
+
+          .description {
+            font-size: 14px;
+            color: $color-muted;
+          }
+        }
+      }
+    }
+  }
+}

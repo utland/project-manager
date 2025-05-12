@@ -1,0 +1,40 @@
+@use "./styles/common/variables.scss" as *;
+@use "./styles/common/mixin.scss" as *;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: $padding / 2;
+  border-radius: $border-radius;
+  color: rgb(0, 0, 0);
+  font-weight: bold;
+  background-color: white;
+  border: 1px solid $color-border;
+  cursor: pointer;
+
+  &:hover {
+    background-color: lighten($color-muted, 10%);
+  }
+}
+
+input {
+  width: 100%;
+  margin-bottom: $padding;
+  padding: $padding / 2;
+  background: #1a1a1a;
+  border: 2px solid $color-border;
+  border-radius: $border-radius;
+  color: $color-text;
+  outline: none;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #121212;
+  color: $color-text;
+}
