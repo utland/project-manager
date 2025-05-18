@@ -4,18 +4,19 @@ import "../../styles/Login.scss";
 import IError from "../../interfaces/error.i";
 import IUser from "../../interfaces/user.model.i";
 import { NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { ThunkDispatch } from "../../interfaces/reduxDefault";
+import { setUser } from "../../redux/slices/userSlice";
 
-interface LoginProps {
-    setUser: React.Dispatch<React.SetStateAction<IUser>>;
-}
-
-function Login({setUser}: LoginProps) {
+function Login() {
     if (localStorage.getItem("token")) {
         window.location.href = "/";
         return;
     };
 
     const [error, setError] = useState<IError>();
+    const dispatch = useDispatch<ThunkDispatch>();
+
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
@@ -29,7 +30,7 @@ function Login({setUser}: LoginProps) {
                 login: login.value,
                 password: password.value
             });
-            setUser(user.data);
+            dispatch(setUser(user.data));
         } catch (error: any) {
             setError(error);
             console.log(error)

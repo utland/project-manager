@@ -1,22 +1,29 @@
+import { useDispatch } from "react-redux";
 import client from "../../api/client"
-import IProject from "../../interfaces/project.model.i";
 import IUser from "../../interfaces/user.model.i";
+import { ThunkDispatch } from "../../interfaces/reduxDefault";
+import { setInvites, setProject, setUsers } from "../../redux/slices/projectSlice";
 
 interface IRequestProps {
     user: IUser,
-    setProject: (project: IProject) => void,
     projectId: string
 }
 
-function RequestCard({user, setProject, projectId}: IRequestProps) {
+function RequestCard({user, projectId}: IRequestProps) {
   const {login, name, photoUrl} = user;
+
+  const dispatch = useDispatch<ThunkDispatch>();
+
   const handlerAccept = async () => {
     try {
-      const project = await client.post("/project/user", {
+      const {data} = await client.post("/project/user", {
         projectId,
         login
       });
-      setProject(project.data);
+      
+      dispatch(setInvites(data.invites));
+      dispatch(setUsers(data.users));
+
     } catch (error) {
       console.log(error)
     }
@@ -24,11 +31,11 @@ function RequestCard({user, setProject, projectId}: IRequestProps) {
 
   const handlerReject = async () => {
     try {
-      const project = await client.post("/project/remove", {
+      const {data} = await client.post("/project/remove", {
         projectId,
         login
       });
-      setProject(project.data);
+      dispatch(setInvites(data.invites));
     } catch (error) {
       console.log(error)
     }

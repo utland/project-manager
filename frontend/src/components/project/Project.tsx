@@ -1,59 +1,60 @@
 import { useParams } from "react-router-dom";
-import IProject from "../../interfaces/project.model.i";
 import "../../styles/Project.scss";
-import { useEffect, useState } from "react";
-import client from "../../api/client";
-import IError from "../../interfaces/error.i";
-import IUser from "../../interfaces/user.model.i";
-import ModalAction from "./ModalAction";
+import { useContext, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { IRootState, ThunkDispatch } from "../../interfaces/reduxDefault";
+import { fetchProject } from "../../redux/slices/projectSlice";
+import Modal from "../modal/Modal";
+import ModalContext from "../../context/ModalContext";
+import ProjectInfo from "./ProjectInfo";
+import Table from "../table/Table";
 
 type idProject = {
     id: string
 }
 
-type ProjectProps = {
-    user: IUser
-}
+type windowType = "info" | "table";
 
-export type IProjectModal = "add" | "requests" | "info" | null;
-
-function Project({user}: ProjectProps) {
+function Project() {
     const { id } = useParams<idProject>();
-    const [project, setProject] = useState<IProject>();
-    const [modal, setModal] = useState<IProjectModal>(null);
+    
+    const {user} = useSelector((state: IRootState) => state.user);
+    const { project, status } = useSelector((state: IRootState) => state.project);
+    const dispatch = useDispatch<ThunkDispatch>();
+    
+    const [window, setWindow] = useState<windowType>("info");
+    const {setModal} = useContext(ModalContext);
 
     useEffect(() => {
-        const init = async () => {
-          client.get(`/project/${id}`)
-            .then(res => setProject(res.data))
-            .catch((error: IError) => {
-                console.log(error);
-            })
-        }
-    
-        init();
+        dispatch(fetchProject(id as string))
     }, []);
 
     return (
-        project ? (
+        status === "completed" ? (
         <div className="project-page">
-            <ModalAction 
-              project={project} 
-              onClose={() => setModal(null)}
-              setProject={(project: IProject) => setProject(project)} 
-              modal={modal}
-            />
-            <div className="project-actions">
+            <Modal />
+
+            {user.id === project.adminId ? <div className="project-actions">
                 <button className="add-user" onClick={() => setModal("add")}>+</button>
-                {user.id === project.adminId ? <button className="users" onClick={() => setModal("requests")}>0</button> : ""}
-                <button className="advanced-info">I</button>
-            </div>
+                <button className="users" onClick={() => setModal("requests")}>0</button>
+                <button className="advanced-info" onClick={() => setModal("info")}>I</button>
+                <button className="delete" onClick={() => setModal("delete")}>D</button>
+            </div> : ""}
             <div className="project-main">
-                <div className="project-info">
-                    <div className="project-text">{project.name}</div>
-                    <div className="project-text">{project.description}</div>
+                <div className="window-switch">
+                    <button 
+                        className={`switch-btn ${window === "info" ? "active" : ""}`}
+                        onClick={() => setWindow("info")}>
+                        Info
+                    </button>
+                    <button 
+                        className={`switch-btn ${window === "table" ? "active" : ""}`}
+                        onClick={() => setWindow("table")}>
+                        Table
+                    </button>
+                    <div className={`switch-indicator ${window}`}></div>
                 </div>
-                {project.users.map(item => <div>{item.name}</div>)}
+                {window === "info" ? <ProjectInfo /> : <Table />}
             </div>
         </div>) : "This project is not found"
     )

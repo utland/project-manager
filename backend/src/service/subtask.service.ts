@@ -17,7 +17,7 @@ class SubtaskService extends Service {
         name,
         projectId,
         parentTask: {
-          connect: { key: taskId },
+          connect: { id: taskId },
         },
       },
     });
@@ -25,10 +25,10 @@ class SubtaskService extends Service {
     return subtask;
   }
 
-  async deleteSubtask(key: number, projectId: string): Promise<SubtaskModel> {
+  async deleteSubtask(id: number, projectId: string): Promise<SubtaskModel> {
     const subtask = this.prismaClient.subtaskModel.delete({
       where: {
-        key,
+        id,
         projectId,
       },
     });
@@ -36,10 +36,10 @@ class SubtaskService extends Service {
     return subtask;
   }
 
-  async updateStatus(key: number, projectId: string, status: Status): Promise<SubtaskModel> {
+  async updateStatus(id: number, projectId: string, status: Status): Promise<SubtaskModel> {
     const subtask = this.prismaClient.subtaskModel.update({
       where: {
-        key,
+        id,
         projectId,
       },
       data: {
@@ -50,10 +50,10 @@ class SubtaskService extends Service {
     return subtask;
   }
 
-  async updateSubtask(key: number, projectId: string, name: string): Promise<SubtaskModel> {
+  async updateSubtask(id: number, projectId: string, name: string): Promise<SubtaskModel> {
     const subtask = this.prismaClient.subtaskModel.update({
       where: {
-        key,
+        id,
         projectId,
       },
       data: {

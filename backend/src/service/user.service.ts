@@ -69,6 +69,7 @@ class UserService extends Service {
             id: true,
             name: true,
             description: true,
+            date: true,
             users: {
               select: {
                 photoUrl: true,
@@ -83,7 +84,7 @@ class UserService extends Service {
   }
 
   async setHash(id: string, hash: string): Promise<UserModel> {
-    const user = this.prismaClient.userModel.update({
+    const user = await this.prismaClient.userModel.update({
       where: {
         id
       },
@@ -128,6 +129,7 @@ class UserService extends Service {
   }
 
   async addProject(idUser: string, idProject: string): Promise<UserModel> {
+    console.log("Add project")
     const user = this.prismaClient.userModel.update({
       where: {
         id: idUser,

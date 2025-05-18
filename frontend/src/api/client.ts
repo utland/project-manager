@@ -9,11 +9,6 @@ const client  = axios.create({
     withCredentials: true
 })
 
-const reFreshclient  = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    withCredentials: true
-})
-
 client.interceptors.request.use(async (config) => {
     const token = localStorage.getItem("token");
     if (config.url === "/user/login" || config.url === "/user/register") return config;
@@ -42,15 +37,7 @@ client.interceptors.response.use((res) => {
     const { data } = error.response as AxiosResponse;
     if (data.type === "token") {
         localStorage.setItem("token", "");
-        try {
-            const { data } = await reFreshclient.post("/user/refresh", {}, {withCredentials: true});
-            const token = data.accessToken;
-            localStorage.setItem("token", token);
-        } catch (refreshErr: any) {
-            const { data } = refreshErr.response as AxiosResponse;
-            router.navigate("/login");
-            return Promise.reject(data);
-        }   
+        router.navigate("/login");  
     }
     
     return Promise.reject(data);

@@ -11,12 +11,13 @@ class ProjectController extends Controller<ProjectService> {
   constructor(service: ProjectService) {
     super(service);
     this.router.post("/", this.create);
-    this.router.delete("/", this.delete);
+    
     this.router.put("/invite", this.addInvite)
     this.router.put("/remove", this.removeInvite)
-
+    
     this.router.get("/:id", this.get);
     this.router.post("/:id", this.update);
+    this.router.delete("/:id", this.delete);
 
     this.router.post("/user", this.addUser);
     this.router.post("/user/remove", this.removeUser);
@@ -24,15 +25,16 @@ class ProjectController extends Controller<ProjectService> {
 
   public create = async (req: RequestApi, res: ResponseApi) => {
     const { id } = res.locals.user;
-    console.log("create")
     const { description, name } = req.body;
     const project = await this.service.createProject(name, description, id);
     res.status(201).json(project);
   };
 
   public get = async (req: RequestApi, res: ResponseApi, error: ErrorFn) => {
-    const id = extractParams(req.path);
-    const project = await this.service.getProject(id);
+    const projectId = extractParams(req.path);
+    const { id } = res.locals.user;
+
+    const project = await this.service.getProject(projectId, id);
     if (!project) {
       error({message: "Project is not found", status: 404})
     } else {
@@ -64,8 +66,8 @@ class ProjectController extends Controller<ProjectService> {
   }
 
   public delete = async (req: RequestApi, res: ResponseApi) => {
-    const { adminId, projectId } = req.query;
-    const deleted = await this.service.deleteProject(adminId as string, projectId as string);
+    const id = extractParams(req.path);
+    const deleted = await this.service.deleteProject(id);
     res.status(201).json(deleted);
   };
 

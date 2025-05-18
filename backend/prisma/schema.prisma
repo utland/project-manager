@@ -39,33 +39,36 @@ model ProjectModel {
 }
 
 model BlockModel {
-  key Int @id
+  id Int @default(autoincrement()) @id
+  key Int 
   name String
   description String
   tasks TaskModel[]
   status Status @default(ToDo)
   projectId String
-  parentProject ProjectModel @relation(fields: [projectId], references: [id])
+  parentProject ProjectModel @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
 
 model TaskModel {
-  key Int @id
+  id Int @default(autoincrement()) @id
+  key Int
   name String
   subtasks SubtaskModel[]
   status Status @default(ToDo)
   projectId String
-  parentProject ProjectModel @relation(fields: [projectId], references: [id])
+  parentProject ProjectModel @relation(fields: [projectId], references: [id], onDelete: Cascade)
   blockId Int?
-  parentBlock BlockModel? @relation(fields: [blockId], references: [key])
+  parentBlock BlockModel? @relation(fields: [blockId], references: [id], onDelete: Cascade)
 }
 
 model SubtaskModel {
-  key Int @id
+  id Int @default(autoincrement()) @id
+  key Int 
   name String
   status Status @default(ToDo)
   projectId String
   taskId Int
-  parentTask TaskModel @relation(fields: [taskId], references: [key])
+  parentTask TaskModel @relation(fields: [taskId], references: [id], onDelete: Cascade)
 }
 
 enum Status {

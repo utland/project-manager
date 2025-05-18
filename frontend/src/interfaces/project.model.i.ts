@@ -7,6 +7,7 @@ interface IProject {
   name: string;
   description: string;
   adminId: string;
+  date: string;
   users: IUser[];
   invites: IUser[];
   blocks: IBlock[];

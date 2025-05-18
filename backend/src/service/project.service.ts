@@ -1,5 +1,5 @@
 import Service from "../common/service.js";
-import { PrismaClient, ProjectModel } from "../../node_modules/.prisma/client/index.js";
+import { PrismaClient, ProjectModel, UserModel } from "../../node_modules/.prisma/client/index.js";
 import { nanoid } from "../../node_modules/nanoid/index.js";
 import { injectable } from "tsyringe";
 
@@ -22,7 +22,7 @@ class ProjectService extends Service {
   }
 
   async createProject(name: string, description: string, adminId: string): Promise<ProjectModel> {
-    const project = this.prismaClient.projectModel.create({
+    const project = await this.prismaClient.projectModel.create({
       data: {
         id: nanoid(),
         name,
@@ -41,7 +41,10 @@ class ProjectService extends Service {
   }
 
   async addInvite(userId: string, projectId: string): Promise<ProjectModel | null> {
-    const project = this.prismaClient.projectModel.update({
+    const isExisted = await this.prismaClient.projectModel.findFirst({where: {id: projectId}});
+    if (!isExisted) return null;
+
+    const project = await this.prismaClient.projectModel.update({
       where: { id: projectId },
       data: {
         invites: {
@@ -56,21 +59,31 @@ class ProjectService extends Service {
   }
 
   async removeInvite(projectId: string, userId: string): Promise<ProjectModel> {
-    const project = this.prismaClient.projectModel.update({
+    const project = await this.prismaClient.projectModel.update({
       where: { id: projectId },
       data: {
         invites: {
           disconnect: { id: userId}
         }
+      },
+      include: {
+        invites: true
       }
     })
 
-    return project
+    return project;
   }
 
-  async getProject(id: string): Promise<ProjectModel | null> {
-    const project = this.prismaClient.projectModel.findFirst({
-      where: { id },
+  async getProject(projectId: string, userId: string): Promise<ProjectModel | null> {
+    const project = await this.prismaClient.projectModel.findFirst({
+      where: { 
+        id: projectId,
+        users: {
+          some: {
+            id: userId
+          }
+        }
+      },
       include: {
         users: {
           select: {
@@ -110,19 +123,14 @@ class ProjectService extends Service {
     return project;
   }
 
-  async deleteProject(adminId: string, idProject: string): Promise<ProjectModel> {
-    const project = this.prismaClient.projectModel.delete({
-      where: {
-        adminId,
-        id: idProject,
-      },
-    });
+  async deleteProject(id: string): Promise<ProjectModel> {
+    const project = await this.prismaClient.projectModel.delete({ where: { id } });
 
     return project;
   }
 
   async updateProject(id: string, name: string, description: string): Promise<ProjectModel> {
-    const project = this.prismaClient.projectModel.update({
+    const project = await this.prismaClient.projectModel.update({
       where: {
         id,
       },
@@ -136,12 +144,11 @@ class ProjectService extends Service {
   }
 
   async addUser(projectId: string, login: string): Promise<ProjectModel | null> {
-    console.log("add user");
     const user = await this.prismaClient.userModel.findUnique({where: { login }, select: { id: true }});
 
     if (!user) return null;
 
-    const project = this.prismaClient.projectModel.update({
+    const project = await this.prismaClient.projectModel.update({
       where: {
         id: projectId,
       },
@@ -153,13 +160,17 @@ class ProjectService extends Service {
           disconnect: { id: user.id }
         }
       },
+      include: {
+        users: true,
+        invites: true
+      }
     });
 
     return project;
   }
 
   async removeUser(idProject: string, idUser: string): Promise<ProjectModel> {
-    const project = this.prismaClient.projectModel.update({
+    const project = await this.prismaClient.projectModel.update({
       where: {
         id: idProject,
       },
@@ -168,6 +179,9 @@ class ProjectService extends Service {
           disconnect: { id: idUser },
         },
       },
+      include: {
+        users: true
+      }
     });
 
     return project;

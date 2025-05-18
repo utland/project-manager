@@ -1,0 +1,195 @@
+/* Основной контейнер таблицы */
+.table {
+  width: 100%;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Кнопка добавления блока снизу */
+.add-row {
+  width: 100%;
+  border: none;
+  background-color: #2a7ade;
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 12px 0;
+  border-radius: 0 0 8px 8px;
+  transition: background-color 0.2s ease;
+}
+.add-row:hover {
+  background-color: #1f5cbf;
+  /* если фон становится темнее, текст остается белым */
+  color: #fff;
+}
+
+/* Список блоков */
+.block-list {
+  border: 1px solid #ddd;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+}
+
+/* Блок: шапка и задачи */
+.block-item {
+  display: grid;
+  grid-template-columns: 50px 1fr 100px auto;
+  grid-template-rows: auto;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  /* базовый цвет текста */
+  color: #ffffff;
+}
+.block-item.open {
+  grid-template-rows: auto auto;
+  background-color: #f9f9f9;
+  /* при светлом фоне делаем текст темнее */
+  color: #000000;
+}
+
+/* Шапка блока */
+.block-item .key {
+  grid-column: 1;
+  font-weight: bold;
+  /* наследует цвет родителя */
+}
+.block-item .name {
+  grid-column: 2;
+  font-size: 16px;
+  /* наследует цвет родителя */
+}
+.block-item .status {
+  grid-column: 3;
+  font-size: 13px;
+  text-transform: uppercase;
+  /* наследует цвет родителя */
+}
+.block-item .actions {
+  grid-column: 4;
+  display: flex;
+  gap: 8px;
+}
+.block-item .actions button {
+  /* наследуем текстовый цвет из .block-item или .block-item.open */
+  color: inherit;
+}
+
+/* Внутренний список задач блока (скрыт) */
+.block-item .task-list {
+  display: none;
+  grid-column: 1 / -1;
+  flex-direction: column;
+  margin-top: 8px;
+  padding-left: 20px;
+}
+.block-item.open .task-list {
+  display: flex;
+}
+
+/* Задачи внутри блока */
+.block-item .task-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+  color: #333;
+}
+.block-item.open .task-item {
+  color: #111;
+}
+.block-item .task-item .name {
+  flex: 1;
+  font-weight: 500;
+}
+.block-item .task-item .status {
+  width: 100px;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+.block-item .task-item .actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* Прокси для добавления задачи */
+.task-proxy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+.task-proxy input {
+  flex: 1;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+/* Список задач проекта (корневой) */
+.table > .task-list {
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 8px;
+  margin-top: 16px;
+  gap: 8px;
+}
+
+/* Строка корневой задачи */
+.table > .task-list > .task-item {
+  display: flex;
+  align-items: center;
+  flex: 0 0 calc(33.333% - 16px);
+  background-color: #fff;
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  color: #333;
+}
+.table > .task-list > .task-item .name {
+  flex: 1;
+  font-weight: 500;
+}
+.table > .task-list > .task-item .status {
+  flex: 0 0 80px;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+.table > .task-list > .task-item .actions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 8px;
+}
+
+/* Кнопки generic */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  font-size: 14px;
+  color: inherit;
+}
+button:hover {
+  background-color: rgba(0,0,0,0.05);
+}
+button.edit {
+  /* override для edit */
+  color: #2a7ade;
+}
+button.delete {
+  color: #d9534f;
+}
+button.toggle {
+  font-size: 16px;
+  transform: rotate(0deg);
+}
+.block-item.open button.toggle {
+  transform: rotate(180deg);
+}

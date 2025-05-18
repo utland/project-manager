@@ -1,7 +1,8 @@
-import { Status } from "../../node_modules/.prisma/client/index.js";
+import Status from "./statusSlice.js";
 import ITask from "./task.model.i.js";
 
 interface ISubtask {
+  id: number;
   key: number;
   name: string;
   status: Status;

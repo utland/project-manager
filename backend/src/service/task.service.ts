@@ -9,11 +9,7 @@ class TaskService extends Service {
     super();
   }
 
-  async createTask(
-    projectId: string,
-    blockId: number | undefined,
-    name: string,
-  ): Promise<TaskModel> {
+  async createTask(projectId: string, blockId: number, name: string): Promise<TaskModel> {
     const key = await ProjectService.getKey(this.prismaClient, projectId);
     const task = this.prismaClient.taskModel.create({
       data: {
@@ -23,20 +19,18 @@ class TaskService extends Service {
           connect: { id: projectId },
         },
         ...(blockId && {
-          parentBlock: {
-            connect: { key: blockId },
-          },
-        }),
+          parentBlock: { connect: { id: blockId } }
+        })
       },
     });
 
     return task;
   }
 
-  async deleteTask(key: number, projectId: string): Promise<TaskModel> {
+  async deleteTask(id: number, projectId: string): Promise<TaskModel> {
     const task = this.prismaClient.taskModel.delete({
       where: {
-        key,
+        id,
         projectId,
       },
     });
@@ -44,10 +38,10 @@ class TaskService extends Service {
     return task;
   }
 
-  async updateStatus(key: number, projectId: string, status: Status): Promise<TaskModel> {
+  async updateStatus(id: number, projectId: string, status: Status): Promise<TaskModel> {
     const task = this.prismaClient.taskModel.update({
       where: {
-        key,
+        id,
         projectId,
       },
       data: {
@@ -58,10 +52,10 @@ class TaskService extends Service {
     return task;
   }
 
-  async updateName(key: number, projectId: string, name: string): Promise<TaskModel> {
+  async updateName(id: number, projectId: string, name: string): Promise<TaskModel> {
     const task = this.prismaClient.taskModel.update({
       where: {
-        key,
+        id,
         projectId,
       },
       data: {

@@ -1,21 +1,18 @@
 import "../../styles/Home.scss";
 import ProjectCard from "./ProjectCard";
-import IProject from "../../interfaces/project.model.i";
-import Modal from "./MainModal";
-import IUser from "../../interfaces/user.model.i";
-import { useState } from "react";
+import { useContext } from "react";
+import { useSelector } from "react-redux";
+import { IRootState } from "../../interfaces/reduxDefault";
+import Modal from "../modal/Modal";
+import ModalContext from "../../context/ModalContext";
 
-interface Iprops {
-    user: IUser,
-    addProject: (project: IProject) => void;
-}
-
-function Home({ user, addProject }: Iprops) {
-    const [modal, setModal] = useState<"create" | "join" | null>(null);
+function Home() {
+    const {setModal} = useContext(ModalContext);
+    const {user} = useSelector((state: IRootState) => state.user);
 
     return(
     <div className="main-page">
-        <Modal type={modal} onClose={() => setModal(null)} addProject={addProject}/>
+        <Modal />
         <div className="content">
             <div className="actions">
                 <button id="create" onClick={() => setModal("create")}>Create</button>

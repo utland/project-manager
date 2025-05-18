@@ -16,19 +16,23 @@ class BlockService extends Service {
         key,
         name,
         description,
+        tasks: { create: [] },
         parentProject: {
           connect: { id: projectId },
         },
       },
+      include: {
+        tasks: true
+      }
     });
 
     return block;
   }
 
-  async deleteBlock(key: number, projectId: string): Promise<BlockModel> {
+  async deleteBlock(id: number, projectId: string): Promise<BlockModel> {
     const block = this.prismaClient.blockModel.delete({
       where: {
-        key,
+        id,
         projectId,
       },
     });
@@ -36,10 +40,10 @@ class BlockService extends Service {
     return block;
   }
 
-  async updateStatus(key: number, projectId: string, status: Status): Promise<BlockModel> {
+  async updateStatus(id: number, projectId: string, status: Status): Promise<BlockModel> {
     const block = this.prismaClient.blockModel.update({
       where: {
-        key,
+        id,
         projectId,
       },
       data: {
@@ -51,14 +55,14 @@ class BlockService extends Service {
   }
 
   async updateBlock(
-    key: number,
+    id: number,
     projectId: string,
     name: string,
     description: string,
   ): Promise<BlockModel> {
     const block = this.prismaClient.blockModel.update({
       where: {
-        key,
+        id,
         projectId,
       },
       data: {

@@ -1,9 +1,8 @@
 import {Router} from "api-server";
-import {ServerAPI} from "api-server";
 import Service from "./service.js";
 
 abstract class Controller<T extends Service> {
-  router: Router
+  router: Router;
   service: T;
 
   constructor(service: T) {

@@ -15,11 +15,11 @@ class UserController extends Controller<UserService> {
     super(service);
     this.router.post("/login", this.login);
     this.router.post("/register", this.register);
-    this.router.post("/refresh", this.refresh);
   
     this.router.get("/", this.getUser);
-    this.router.post("/update", this.updateUser);
     this.router.delete("/", this.deleteUser);
+
+    this.router.post("/update", this.updateUser);
     this.router.post("/update-password", this.setNewPassword);
   
     this.router.post("/project", this.addProject);
@@ -55,31 +55,16 @@ class UserController extends Controller<UserService> {
 
       const { password, ...others } = user;
       res
-        .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'none', secure: true, maxAge: 3600 * 1000 })
+        .cookie('refreshToken', refreshToken, { httpOnly: true, sameSite: 'none', secure: true, maxAge: 3600 * 1000, path: "/" })
         .header("Access-Control-Expose-Headers", "Authorization")
         .header('Authorization', accessToken)
         .json(others);
     }
   };
 
-  public refresh = async (req: RequestApi, res: ResponseApi, error: ErrorFn) => {
-    const refreshToken = req.cookies['refreshToken'];
-
-    if (!refreshToken) return error({message: "Refresh token is not provided", status: 401})
-    try {
-      const secretKey = process.env.SECRET_KEY as string;
-      const decoded = jwt.verify(refreshToken, secretKey) as IPayload;
-      const {id, login} = decoded;
-      const accessToken = jwt.sign({id, login}, secretKey, { expiresIn: "5m"});
-  
-      res.json({accessToken});
-    } catch {
-      return error({message: "Refresh token is expired", status: 401, type: "refresh"})
-    }
-  };
-
   public getUser = async (req: RequestApi, res: ResponseApi, error: ErrorFn) => {
     const { id } = res.locals.user;
+    const userKey = `getUser - ${id}`;
 
     const user: UserModel | null = await this.service.getUser(id);
     if (!user) {
@@ -93,6 +78,7 @@ class UserController extends Controller<UserService> {
   public setNewPassword = async (req: RequestApi, res: ResponseApi) => {
     const { id } = res.locals.user;
     const {password} = req.body;
+    
     const hash = await bcrypt.hash(password, 10);
     const user = await this.service.setHash(id, hash);
     res.status(201).json(user);
@@ -101,6 +87,7 @@ class UserController extends Controller<UserService> {
   public updateUser = async (req: RequestApi, res: ResponseApi) => {
     const { id, name, info, photoUrl } = req.body;
     const user = await this.service.updateUser(id, name, info, photoUrl);
+
     res.status(201).json(user);
   };
 
@@ -112,18 +99,21 @@ class UserController extends Controller<UserService> {
   public deleteUser = async (req: RequestApi, res: ResponseApi) => {
     const { id } = req.query;
     const deleted = await this.service.deleteUser(id);
+
     res.status(201).json(deleted);
   };
 
   public addProject = async (req: RequestApi, res: ResponseApi) => {
     const { userId, projectId } = req.body;
     const user = await this.service.addProject(userId, projectId);
+
     res.status(201).json(user);
   };
 
   public removeProject = async (req: RequestApi, res: ResponseApi) => {
     const { userId, projectId } = req.body;
     const user = await this.service.removeProject(userId, projectId);
+
     res.status(201).json(user);
   };
 }

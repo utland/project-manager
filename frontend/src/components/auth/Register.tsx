@@ -31,7 +31,6 @@ function Register() {
                 email: email.value
             });
             
-            console.log(user);
             router.navigate("/");
         } catch (error: any) {
             setError(error);

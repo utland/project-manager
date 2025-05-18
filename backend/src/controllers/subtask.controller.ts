@@ -21,20 +21,20 @@ class SubtaskController extends Controller<SubtaskService> {
   };
 
   public delete = async (req: RequestApi, res: ResponseApi) => {
-    const { key, projectId } = req.body;
-    const deleted = await this.service.deleteSubtask(key, projectId);
+    const { id, projectId } = req.body;
+    const deleted = await this.service.deleteSubtask(id, projectId);
     res.status(201).json(deleted);
   };
 
   public update = async (req: RequestApi, res: ResponseApi) => {
-    const { key, projectId, name } = req.body;
-    const updated = await this.service.updateSubtask(key, projectId, name);
+    const { id, projectId, name } = req.body;
+    const updated = await this.service.updateSubtask(id, projectId, name);
     res.status(201).json(updated);
   };
 
   public updateStatus = async (req: RequestApi, res: ResponseApi) => {
-    const { key, projectId, status } = req.body;
-    const updated = await this.service.updateStatus(key, projectId, status);
+    const { id, projectId, status } = req.body;
+    const updated = await this.service.updateStatus(id, projectId, status);
     res.status(201).json(updated);
   };
 }
