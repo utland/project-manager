@@ -45,7 +45,6 @@ function Subtask({data}: ISubtaskProps) {
     return (
       <>
         <div className={'table-item open'}>
-          <div>Subtask</div>
           <div className="key">{key}</div>
           <div className="name">{name}</div>
           <select id="status" value={status} onChange={(e) => handlerStatus(e.target.value)}>

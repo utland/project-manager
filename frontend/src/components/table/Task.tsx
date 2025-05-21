@@ -50,7 +50,6 @@ function Task({data}: ITaskProps) {
     return (
       <>
         <div className={isTasks ? 'table-item open' : 'table-item'}>
-          <div>Task </div>
           <div className="key">{key}</div>
           <div className="name">{name}</div>
           <select id="status" value={status} onChange={(e) => handlerStatus(e.target.value)}>

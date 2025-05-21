@@ -32,15 +32,26 @@
 
 /* Блок: шапка и задачи */
 .table-item {
+  font-size: 18px;
   display: grid;
-  grid-template-columns: 50px 1fr 200px auto;
+  grid-template-columns: 50px 1fr 100px auto;
+  gap: 10px;
   grid-template-rows: auto;
   align-items: center;
-  justify-content: center;
   padding: 12px 16px;
   border-bottom: 1px solid #eee;
   /* базовый цвет текста */
   color: #ffffff;
+
+  .info {
+    display: grid;
+    grid-template-columns: 3fr 7fr;
+    align-items: center;
+  }
+
+  .desc {
+    width: 400px;
+  }
 
   .table-item {
     grid-template-rows: auto auto;
@@ -48,8 +59,9 @@
     color: #000000;
   }
 
-  .status {
+  #status {
     margin: 0px;
+    align-items: center;
   }
 }
 .table-item.open {
@@ -63,30 +75,24 @@
 .table-item .key {
   grid-column: 1;
   font-weight: bold;
-  /* наследует цвет родителя */
 }
-.table-item .name {
+.table-item .info {
   grid-column: 2;
-  font-size: 16px;
-  /* наследует цвет родителя */
 }
 .table-item .status {
   grid-column: 3;
   font-size: 13px;
   text-transform: uppercase;
-  /* наследует цвет родителя */
 }
 .table-item .actions {
-  grid-column: 4;
+  grid-column: 5;
   display: flex;
   gap: 8px;
 }
 .table-item .actions button {
-  /* наследуем текстовый цвет из .table-item или .table-item.open */
   color: inherit;
 }
 
-/* Внутренний список задач блока (скрыт) */
 .table-item .task-list {
   display: none;
   grid-column: 1 / -1;
@@ -98,7 +104,6 @@
   display: flex;
 }
 
-/* Задачи внутри блока */
 .table-item .task-item {
   display: flex;
   align-items: center;
@@ -123,23 +128,25 @@
   gap: 8px;
 }
 
-/* Прокси для добавления задачи */
 .task-proxy {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 0;
-}
-.task-proxy input {
-  flex: 1;
-  padding: 6px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 14px;
-  color: #ffffff;
+  padding: 5px 0;
+  background-color: #f0f0f0;
+
+  input {
+    align-items: center;
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 10px;
+    font-size: 14px;
+    color: #000000;
+    background-color: #f0f0f0;
+  }
 }
 
-/* Список задач проекта (корневой) */
 .table > .task-list {
   display: flex;
   flex-wrap: wrap;
@@ -150,7 +157,6 @@
   gap: 8px;
 }
 
-/* Строка корневой задачи */
 .table > .task-list > .task-item {
   display: flex;
   align-items: center;
@@ -176,7 +182,6 @@
   gap: 8px;
 }
 
-/* Кнопки generic */
 button {
   border: none;
   background: none;
@@ -191,7 +196,6 @@ button:hover {
   background-color: rgba(0,0,0,0.05);
 }
 button.edit {
-  /* override для edit */
   color: #2a7ade;
 }
 button.delete {

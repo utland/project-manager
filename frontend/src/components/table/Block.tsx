@@ -48,20 +48,23 @@ function Block({data, isEditable = false}: IBlockProps) {
 
     return (
         <div className={isTasks ? 'table-item open' : 'table-item'}>
-            <div className="key">{key}</div>
+          <div className="key">{key}</div>
+          <div className="info">
             <div className="name">{name}</div>
-            <select id="status" value={status} onChange={(e) => handlerStatus(e.target.value)}>
-              <option value={"ToDo"}>ToDo</option>
-              <option value={"InProcess"}>In Process</option>
-              <option value={"Done"}>Done</option>
+            <div className="desc">{description}</div>
+          </div>
+          <select id="status" value={status} onChange={(e) => handlerStatus(e.target.value)}>
+            <option value={"ToDo"}>ToDo</option>
+            <option value={"InProcess"}>In Process</option>
+            <option value={"Done"}>Done</option>
           </select>
-            <div className="actions">
-                <button className="edit">E</button>
-                <button className="delete" onClick={handlerDelete}>D</button>
-                <button className="toggle" onClick={() => setIsTasks(!isTasks)}>
-                    {isTasks ? "↓" : "↑"}
-                </button>
-            </div>
+          <div className="actions">
+            <button className="edit">E</button>
+            <button className="delete" onClick={handlerDelete}>D</button>
+            <button className="toggle" onClick={() => setIsTasks(!isTasks)}>
+              {isTasks ? "↓" : "↑"}
+            </button>
+          </div>
           {isTasks && 
           <div className="task-list">
             {tasks.map(item => <Task data={item}/>)}

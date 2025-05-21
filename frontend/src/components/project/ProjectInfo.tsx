@@ -9,9 +9,9 @@ const ProjectInfo: React.FC = () => {
 
     return (
       <div className="project-info">
-        <div>{project.id}</div>
-        <div className="project-text">{project.name}</div>
-        <div className="project-text">{project.description}</div>
+        <div>Key: {project.id}</div>
+        <div className="project-text">Name: {project.name}</div>
+        <div className="project-text">Description: {project.description}</div>
         Users:
         <div className="user-list">
           {project.users.map(item => 
