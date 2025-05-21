@@ -2,6 +2,7 @@ import { injectable } from "tsyringe";
 import { BlockModel, Status } from "../../node_modules/.prisma/client/index.js";
 import Service from "../common/service.js";
 import ProjectService from "./project.service.js";
+import { create } from "node:domain";
 
 @injectable()
 class BlockService extends Service {
@@ -9,7 +10,7 @@ class BlockService extends Service {
     super();
   }
 
-  async createBlock(projectId: string, name: string, description: string): Promise<BlockModel> {
+  async createBlock(projectId: string, name: string, description: string, usersId: string[]): Promise<BlockModel> {
     const key = await ProjectService.getKey(this.prismaClient, projectId);
     const block = this.prismaClient.blockModel.create({
       data: {
@@ -20,9 +21,21 @@ class BlockService extends Service {
         parentProject: {
           connect: { id: projectId },
         },
+        ...(usersId ? 
+          {users: { connect: usersId.map(id => ({ id })) }} :
+          {users: { create: [] }}
+        )
       },
       include: {
-        tasks: true
+        tasks: true,
+        users: {
+          select: {
+            id: true,
+            photoUrl: true,
+            login: true,
+            name: true
+          }
+        }
       }
     });
 
@@ -41,7 +54,12 @@ class BlockService extends Service {
   }
 
   async updateStatus(id: number, projectId: string, status: Status): Promise<BlockModel> {
-    const block = this.prismaClient.blockModel.update({
+    if (status === Status.Done) {
+      await this.prismaClient.taskModel.updateMany({where: {blockId: id}, data: {status}})
+      await this.prismaClient.subtaskModel.updateMany({where: {blockId: id}, data: { status }})
+    }
+
+    const block = await this.prismaClient.blockModel.update({
       where: {
         id,
         projectId,
@@ -49,6 +67,9 @@ class BlockService extends Service {
       data: {
         status,
       },
+      include: {
+        tasks: true
+      }
     });
 
     return block;
@@ -59,6 +80,7 @@ class BlockService extends Service {
     projectId: string,
     name: string,
     description: string,
+    usersId: string[]
   ): Promise<BlockModel> {
     const block = this.prismaClient.blockModel.update({
       where: {
@@ -68,7 +90,21 @@ class BlockService extends Service {
       data: {
         name,
         description,
+        users: {
+          connect: usersId.map(id => ({ id })),
+        }
       },
+      include: {
+        tasks: true,
+        users: {
+          select: {
+            id: true,
+            photoUrl: true,
+            login: true,
+            name: true
+          }
+        }
+      }
     });
 
     return block;

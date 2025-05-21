@@ -7,10 +7,12 @@ import { addBlock, setInvites, setUsers } from "../../redux/slices/projectSlice"
 import { useContext, useState } from "react";
 import ModalContext from "../../context/ModalContext";
   
+type IComponent = "task" | "block"; 
+
 function ModalAddBlock() {
     const dispatch = useDispatch<ThunkDispatch>();
     const {closeModal} = useContext(ModalContext);
-    const [component, setComponent] = useState<"task" | "block">("block");
+    const [component, setComponent] = useState<IComponent>("block");
     const { project } = useSelector((state: IRootState) => state.project)
 
     const handleSubmitAdd = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -20,14 +22,17 @@ function ModalAddBlock() {
         const desc = elements.namedItem("desc") as HTMLInputElement;
         
         try {
-          const {data} = await client.post("/block", {
-              name: name.value,
-              description: desc.value,
-              projectId: project.id
-          });
+          const body: object = {
+            name: name.value,
+            projectId: project.id,
+            ...(desc && {
+              description: desc.value
+            })
+          }
+
+          const {data} = await client.post(`/${component}`, body);
 
           dispatch(addBlock(data));
-
           closeModal();
         } catch (error: any) {
           console.log(error)
@@ -36,11 +41,15 @@ function ModalAddBlock() {
     
     return (
       <>
-        <h2>Add user</h2>
-        <div className="type">{component}</div>
+        <h2>Create new cmponent</h2>
+        <select id="cities" onChange={(e) => setComponent(e.currentTarget.value as IComponent)}>
+          <option value="block">Block</option>
+          <option value="task">Task</option>
+        </select>
+        <button></button>
         <form onSubmit={handleSubmitAdd}>
-          <input placeholder="Name" name="name" />
-          <input placeholder="Description" name="desc" />
+          <input placeholder="Name" name="name" autoComplete="off"/>
+          {component === "block" ? <input placeholder="Description" name="desc" autoComplete="off"/> : ""}
           <button type="submit">Add {component}</button>
         </form>
       </>

@@ -9,19 +9,30 @@ class TaskService extends Service {
     super();
   }
 
-  async createTask(projectId: string, blockId: number, name: string): Promise<TaskModel> {
+  async createTask(projectId: string, blockId: number, name: string, id: string): Promise<TaskModel> {
     const key = await ProjectService.getKey(this.prismaClient, projectId);
     const task = this.prismaClient.taskModel.create({
       data: {
         key,
         name,
-        parentProject: {
-          connect: { id: projectId },
-        },
+        parentProject: {connect: { id: projectId }},
+        subtasks: {create: []},
+        ...(id && {user: {connect: {id}}}),
         ...(blockId && {
           parentBlock: { connect: { id: blockId } }
         })
       },
+      include: {
+        subtasks: true,
+        user: {
+          select: {
+            id: true,
+            photoUrl: true,
+            login: true,
+            name: true
+          }
+        }
+      }
     });
 
     return task;
@@ -39,7 +50,11 @@ class TaskService extends Service {
   }
 
   async updateStatus(id: number, projectId: string, status: Status): Promise<TaskModel> {
-    const task = this.prismaClient.taskModel.update({
+    if (status === Status.Done) {
+      await this.prismaClient.subtaskModel.updateMany({where: {taskId: id}, data: {status}})
+    }
+
+    const task = await this.prismaClient.taskModel.update({
       where: {
         id,
         projectId,
@@ -47,12 +62,16 @@ class TaskService extends Service {
       data: {
         status,
       },
+      include: {
+        subtasks: true
+      }
     });
+
 
     return task;
   }
 
-  async updateName(id: number, projectId: string, name: string): Promise<TaskModel> {
+  async updateTask(id: number, projectId: string, name: string, userId: string): Promise<TaskModel> {
     const task = this.prismaClient.taskModel.update({
       where: {
         id,
@@ -60,7 +79,21 @@ class TaskService extends Service {
       },
       data: {
         name,
+        user: {
+          connect: {id: userId}
+        }
       },
+      include: {
+        subtasks: true,
+        user: {
+          select: {
+            id: true,
+            photoUrl: true,
+            login: true,
+            name: true
+          }
+        }
+      }
     });
 
     return task;

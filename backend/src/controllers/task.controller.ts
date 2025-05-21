@@ -3,6 +3,7 @@ import { ResponseApi } from "api-server";
 import Controller from "../common/controller.js";
 import TaskService from "../service/task.service.js";
 import { injectable } from "tsyringe";
+import getStatus from "../utils/getStatus.js";
 
 @injectable()
 class TaskController extends Controller<TaskService> {
@@ -15,8 +16,8 @@ class TaskController extends Controller<TaskService> {
   }
 
   public create = async (req: RequestApi, res: ResponseApi) => {
-    const { projectId, blockId, name } = req.body;
-    const task = await this.service.createTask(projectId, blockId, name);
+    const { projectId, blockId, name, userId } = req.body;
+    const task = await this.service.createTask(projectId, blockId, name, userId);
     res.status(201).json(task);
   };
 
@@ -27,14 +28,15 @@ class TaskController extends Controller<TaskService> {
   };
 
   public update = async (req: RequestApi, res: ResponseApi) => {
-    const { id, projectId, name } = req.body;
-    const updated = await this.service.updateName(id, projectId, name);
+    const { id, projectId, name, userId} = req.body;
+    const updated = await this.service.updateTask(id, projectId, name, userId);
     res.status(201).json(updated);
   };
 
   public updateStatus = async (req: RequestApi, res: ResponseApi) => {
     const { id, projectId, status } = req.body;
-    const updated = await this.service.updateStatus(id, projectId, status);
+    const statusEnum = getStatus(status);
+    const updated = await this.service.updateStatus(id, projectId, statusEnum);
     res.status(201).json(updated);
   };
 }

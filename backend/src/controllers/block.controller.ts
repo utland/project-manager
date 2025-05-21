@@ -3,6 +3,7 @@ import { ResponseApi } from "api-server";
 import Controller from "../common/controller.js";
 import BlockService from "../service/block.service.js";
 import { injectable } from "tsyringe";
+import getStatus from "../utils/getStatus.js";
 
 @injectable()
 class BlockController extends Controller<BlockService> {
@@ -15,8 +16,8 @@ class BlockController extends Controller<BlockService> {
   }
 
   public create = async (req: RequestApi, res: ResponseApi) => {
-    const { projectId, description, name } = req.body;
-    const block = await this.service.createBlock(projectId, name, description);
+    const { projectId, description, name, usersId } = req.body;
+    const block = await this.service.createBlock(projectId, name, description, usersId);
     res.status(201).json(block);
   };
 
@@ -27,14 +28,15 @@ class BlockController extends Controller<BlockService> {
   };
 
   public update = async (req: RequestApi, res: ResponseApi) => {
-    const { id, projectId, name, description } = req.body;
-    const updated = await this.service.updateBlock(id, projectId, name, description);
+    const { id, projectId, name, description, usersId } = req.body;
+    const updated = await this.service.updateBlock(id, projectId, name, description, usersId);
     res.status(201).json(updated);
   };
 
   public updateStatus = async (req: RequestApi, res: ResponseApi) => {
     const { id, projectId, status } = req.body;
-    const updated = await this.service.updateStatus(id, projectId, status);
+    const statusEnum = getStatus(status);
+    const updated = await this.service.updateStatus(id, projectId, statusEnum);
     res.status(201).json(updated);
   };
 }

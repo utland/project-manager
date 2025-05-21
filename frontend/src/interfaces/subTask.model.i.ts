@@ -1,4 +1,4 @@
-import Status from "./statusSlice.js";
+import Status from "./status.i.js";
 import ITask from "./task.model.i.js";
 
 interface ISubtask {
@@ -6,8 +6,9 @@ interface ISubtask {
   key: number;
   name: string;
   status: Status;
-  parentTask: ITask;
+  taskId: number;
   projectId: string;
+  blockId: number
 }
 
 export default ISubtask;

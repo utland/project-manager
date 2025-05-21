@@ -3,28 +3,27 @@ import { IRootState, ThunkDispatch } from "../../interfaces/reduxDefault";
 import "../../styles/Table.scss";
 import { useRef } from "react";
 import client from "../../api/client";
-import { addTask } from "../../redux/slices/projectSlice";
+import { addSubtask, addTask } from "../../redux/slices/projectSlice";
 
 interface IProps {
-    blockId: number,
-    setProxy: (value: boolean) => void
+    blockId: number | undefined,
+    taskId?: number,
+    setProxy: (value: boolean) => void,
+    component: "task" | "subtask";
 }
 
-function TaskProxy({blockId, setProxy}: IProps) {
+function Proxy({taskId, setProxy, component, blockId}: IProps) {
     const { project } = useSelector((state: IRootState) => state.project);
     const dispatch = useDispatch<ThunkDispatch>();
     const ref = useRef<any>(null);
 
     const handlerAdd = async () => {
         try {
-          const name = ref.current ? ref.current.value : "name"
-          const {data} = await client.post("/task", {
-            blockId: blockId,
-            projectId: project.id,
-            name
-          });
+          const name = ref.current ? ref.current.value : "name";
+          const body = {name, projectId: project.id, blockId};
+          const {data} = await client.post(`/${component}`, {...body, ...(taskId && {taskId})});
 
-          dispatch(addTask(data));
+          dispatch(component === "task" ? addTask(data) : addSubtask(data));
           setProxy(false);
         } catch (error: any) {
           console.log(error)
@@ -42,4 +41,4 @@ function TaskProxy({blockId, setProxy}: IProps) {
     )
 }
 
-export default TaskProxy;
+export default Proxy;

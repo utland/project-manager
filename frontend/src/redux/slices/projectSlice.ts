@@ -4,6 +4,8 @@ import IProject from "../../interfaces/project.model.i";
 import { nullProject } from "../../interfaces/layout";
 import Status from "../../interfaces/statusSlice";
 import ITask from "../../interfaces/task.model.i";
+import IBlock from "../../interfaces/block.model.i";
+import ISubtask from "../../interfaces/subTask.model.i";
 
 interface IUserConfig {
     project: IProject,
@@ -48,7 +50,6 @@ const projectSlice = createSlice({
         }, 
         removeTask: (state, action: PayloadAction<ITask>) => {
             const {blockId, id, key} = action.payload;
-            console.log(action.payload)
             if (!blockId) {
                 const tasks = state.project.tasks;
                 state.project.tasks = tasks.filter(item => item.id !== id)
@@ -58,6 +59,69 @@ const projectSlice = createSlice({
 
                 block.tasks = block.tasks.filter(item => item.key !== key);
             } 
+        },
+        updateBlock: (state, action: PayloadAction<IBlock>) => {
+            const {key, status, name, description, tasks} = action.payload;
+            const block = state.project.blocks.find(item => item.key === key);
+            if (!block) return;
+
+            block.status = status;
+            block.name = name;
+            block.description = description;
+            block.tasks = tasks;
+        },
+        updateTask: (state, action: PayloadAction<ITask>) => {
+            const {key, blockId, name, subtasks, status} = action.payload;
+            let task;
+            if (!blockId) {
+                task = state.project.tasks.find(item => item.key === key);
+            } else {
+                task = state.project.blocks.find(item => item.id === blockId)?.tasks.find(item => item.key === key);
+            }
+            if (!task) return;
+
+            task.subtasks = subtasks;
+            task.name = name;
+            task.status = status;
+        },
+        updateSubtask: (state, action: PayloadAction<ISubtask>) => {
+            const {blockId, name, status, id, taskId} = action.payload;
+            let subtask;
+            if (!blockId) {
+                const task = state.project.tasks.find(item => item.id === taskId);
+                subtask = task?.subtasks.find(item => item.id === id);
+            } else {
+                const block = state.project.blocks.find(item => item.id === blockId);
+                const task = block?.tasks.find(item => item.id === taskId);
+                subtask = task?.subtasks.find(item => item.id === id);
+            }
+            if (!subtask) return;
+
+            subtask.status = status;
+            subtask.name = name;
+        },
+        addSubtask: (state, action: PayloadAction<ISubtask>) => {
+            const {blockId, taskId} = action.payload;
+            if (!blockId) {
+                const task = state.project.tasks.find(item => item.id === taskId);
+                task?.subtasks.push(action.payload);
+            } else {
+                const block = state.project.blocks.find(item => item.id === blockId);
+                const task = block?.tasks.find(item => item.id === taskId);
+                task?.subtasks.push(action.payload);
+            }
+        },
+        removeSubtask: (state, action: PayloadAction<ISubtask>) => {
+            const {blockId, taskId} = action.payload;
+            if (!blockId) {
+                state.project.tasks = state.project.tasks.filter(item => item.id !== taskId);
+            } else {
+                const block = state.project.blocks.find(item => item.id === blockId);
+                if (!block) return;
+
+                block.tasks = block?.tasks.filter(item => item.id !== taskId);
+            }
+
         },
         setInvites: (state, action) => {
             state.project.invites = action.payload;
@@ -76,13 +140,17 @@ const projectSlice = createSlice({
             state.status = "error";
         });
         builder.addCase(fetchProject.fulfilled, (state, action) => {
-            // console.log(action.payload);
             state.project = action.payload;
             state.status = "completed";
         });
     }
 })
 
-export const {setProject, setUsers, setInvites, updateProject, addBlock, addTask, removeBlock, removeTask} = projectSlice.actions;
+export const {
+    setProject, setUsers, setInvites, updateProject,
+    addBlock, removeBlock, updateBlock,
+    addTask, removeTask, updateTask,
+    addSubtask, removeSubtask, updateSubtask
+} = projectSlice.actions;
 
 export default projectSlice.reducer;

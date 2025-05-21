@@ -3,6 +3,7 @@ import SubtaskService from "../service/subtask.service.js";
 import { injectable } from "tsyringe";
 import { RequestApi } from "api-server";
 import { ResponseApi } from "api-server";
+import getStatus from "../utils/getStatus.js";
 
 @injectable()
 class SubtaskController extends Controller<SubtaskService> {
@@ -15,8 +16,8 @@ class SubtaskController extends Controller<SubtaskService> {
   }
 
   public create = async (req: RequestApi, res: ResponseApi) => {
-    const { projectId, taskId, name } = req.body;
-    const project = await this.service.createSubtask(projectId, taskId, name);
+    const { projectId, taskId, name, blockId} = req.body;
+    const project = await this.service.createSubtask(name, projectId, taskId, blockId);
     res.status(201).json(project);
   };
 
@@ -34,7 +35,8 @@ class SubtaskController extends Controller<SubtaskService> {
 
   public updateStatus = async (req: RequestApi, res: ResponseApi) => {
     const { id, projectId, status } = req.body;
-    const updated = await this.service.updateStatus(id, projectId, status);
+    const statusEnum = getStatus(status);
+    const updated = await this.service.updateStatus(id, projectId, statusEnum);
     res.status(201).json(updated);
   };
 }

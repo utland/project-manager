@@ -9,7 +9,7 @@ class SubtaskService extends Service {
     super();
   }
 
-  async createSubtask(projectId: string, taskId: number, name: string): Promise<SubtaskModel> {
+  async createSubtask(name: string, projectId: string, taskId: number, blockId: number): Promise<SubtaskModel> {
     const key = await ProjectService.getKey(this.prismaClient, projectId);
     const subtask = this.prismaClient.subtaskModel.create({
       data: {
@@ -19,6 +19,7 @@ class SubtaskService extends Service {
         parentTask: {
           connect: { id: taskId },
         },
+        ...(blockId && {blockId})
       },
     });
 

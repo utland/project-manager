@@ -4,9 +4,9 @@ import IBlock from "../../interfaces/block.model.i";
 import "../../styles/Table.scss";
 import Task from "./Task";
 import client from "../../api/client";
-import { removeBlock } from "../../redux/slices/projectSlice";
+import { removeBlock, updateBlock } from "../../redux/slices/projectSlice";
 import { useState } from "react";
-import TaskProxy from "./TaskProxy";
+import Proxy from "./Proxy";
 
 
 interface IBlockProps {
@@ -32,11 +32,29 @@ function Block({data, isEditable = false}: IBlockProps) {
         };
     }
 
+    const handlerStatus = async (status: string) => {
+      try {
+        const {data} = await client.post("/block/status", {
+          id,
+          projectId,
+          status
+        });
+
+        dispatch(updateBlock(data));
+      } catch (error: any) {
+        console.log(error)
+      };
+    }
+
     return (
-        <div className={isTasks ? 'block-item open' : 'block-item'}>
+        <div className={isTasks ? 'table-item open' : 'table-item'}>
             <div className="key">{key}</div>
             <div className="name">{name}</div>
-            <div className="status">{status}</div>
+            <select id="status" value={status} onChange={(e) => handlerStatus(e.target.value)}>
+              <option value={"ToDo"}>ToDo</option>
+              <option value={"InProcess"}>In Process</option>
+              <option value={"Done"}>Done</option>
+          </select>
             <div className="actions">
                 <button className="edit">E</button>
                 <button className="delete" onClick={handlerDelete}>D</button>
@@ -48,7 +66,7 @@ function Block({data, isEditable = false}: IBlockProps) {
           <div className="task-list">
             {tasks.map(item => <Task data={item}/>)}
             {newTask ?
-              <TaskProxy blockId={id} setProxy={(value: boolean) => createTask(value)}/> : 
+              <Proxy component={"task"} blockId={id} setProxy={(value: boolean) => createTask(value)}/> : 
               <button className="add-row" onClick={() => createTask(true)}>+</button>
             }
           </div>

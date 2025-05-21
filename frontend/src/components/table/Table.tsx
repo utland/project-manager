@@ -1,30 +1,28 @@
-import { useDispatch, useSelector } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { IRootState, ThunkDispatch } from "../../interfaces/reduxDefault";
-import Block from "./Block";
 import "../../styles/Table.scss";
 import Task from "./Task";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import ProxyContext from "../../context/ProxyContext";
+import Block from "./Block";
 import ModalContext from "../../context/ModalContext";
-
-interface AddingState {
-  type: 'block' | 'task' | 'subtask';
-  parentId?: string;
-}
 
 function Table() {
     const { project } = useSelector((state: IRootState) => state.project);
-    const {setModal} = useContext(ModalContext);
+    const [proxy, setProxy] = useState<boolean>(false);
+    const {setModal} = useContext(ModalContext)
 
     return (
+      <ProxyContext.Provider value={{proxy, setProxy: (value: boolean) => setProxy(value)}}>
         <div className="table">
-          <div className="block-list">
+          <div className="list">
+            {/* {proxy ? <Proxy /> : ""} */}
             {project.blocks.map((item) => <Block data={item}/>)}
-          </div>
-          <div className="task-list">
             {project.tasks.map((item) => <Task data={item}/>)}
           </div>
           <button className="add-row" onClick={() => setModal("addBlock")}>+</button>
         </div>
+      </ProxyContext.Provider>
     )
 }
 
