@@ -7,6 +7,7 @@ import client from "../../api/client";
 import { removeTask, updateTask } from "../../redux/slices/projectSlice";
 import Subtask from "./Subtask";
 import TaskProxy from "./Proxy";
+import Edit from "./Edit";
 
 interface ITaskProps {
     data: ITask,
@@ -48,7 +49,7 @@ function Task({data}: ITaskProps) {
     }
     
     return (
-      <>
+      <>{isEdit ? <Edit data={data} type="task" closeEdit={() => setIsEdit(false)}/> :
         <div className={isTasks ? 'table-item open' : 'table-item'}>
           <div className="key">{key}</div>
           <div className="name">{name}</div>
@@ -73,6 +74,7 @@ function Task({data}: ITaskProps) {
             }
           </div>}
         </div>
+        }
       </>
     )
 }

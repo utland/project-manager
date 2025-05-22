@@ -6,11 +6,16 @@ import Status from "../../interfaces/statusSlice";
 import ITask from "../../interfaces/task.model.i";
 import IBlock from "../../interfaces/block.model.i";
 import ISubtask from "../../interfaces/subTask.model.i";
+import { memoize } from "../../utils/memoize";
 
 interface IUserConfig {
     project: IProject,
-    status: Status
+    status: Status,
 }
+
+const findState = (arr: any[], id: number) => arr.find(item => item.id === id);
+
+const memoizedFind = memoize(findState);
 
 export const fetchProject = createAsyncThunk("users/fetchproject", async (id: string) => {
     const { data } = await client.get(`/project/${id}`);
@@ -19,7 +24,7 @@ export const fetchProject = createAsyncThunk("users/fetchproject", async (id: st
 
 const initialState: IUserConfig = {
     project: nullProject,
-    status: "loading"
+    status: "loading",
 }
 
 const projectSlice = createSlice({
@@ -38,6 +43,16 @@ const projectSlice = createSlice({
         removeBlock: (state, action) => {
             const blocks = state.project.blocks;
             state.project.blocks = blocks.filter(item => item.id !== action.payload)
+        },
+        updateBlock: (state, action: PayloadAction<IBlock>) => {
+            const {id, status, name, description, tasks} = action.payload;
+            const block = state.project.blocks.find(item => item.id === id);
+            if (!block) return;
+
+            block.status = status;
+            block.name = name;
+            block.description = description;
+            block.tasks = tasks;
         },
         addTask: (state, action: PayloadAction<ITask>) => {
             const {blockId} = action.payload;
@@ -59,16 +74,6 @@ const projectSlice = createSlice({
 
                 block.tasks = block.tasks.filter(item => item.key !== key);
             } 
-        },
-        updateBlock: (state, action: PayloadAction<IBlock>) => {
-            const {key, status, name, description, tasks} = action.payload;
-            const block = state.project.blocks.find(item => item.key === key);
-            if (!block) return;
-
-            block.status = status;
-            block.name = name;
-            block.description = description;
-            block.tasks = tasks;
         },
         updateTask: (state, action: PayloadAction<ITask>) => {
             const {key, blockId, name, subtasks, status} = action.payload;

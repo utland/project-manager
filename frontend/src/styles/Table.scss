@@ -31,6 +31,24 @@
 }
 
 /* Блок: шапка и задачи */
+.edit-row {
+  grid-template-columns: 50px 1fr auto;
+  grid-template-rows: auto;
+  align-items: center;
+  gap: 10px;
+  align-items: center;
+
+  input {
+    background-color: #f9f9f9;
+    color: #000000;
+    outline: none;
+    font-size: 18px;
+    margin: 0;
+    padding: 0;
+    border: none;
+  }
+}
+
 .table-item {
   font-size: 18px;
   display: grid;
@@ -39,8 +57,7 @@
   grid-template-rows: auto;
   align-items: center;
   padding: 12px 16px;
-  border-bottom: 1px solid #eee;
-  /* базовый цвет текста */
+  border: 1px solid #eee;
   color: #ffffff;
 
   .info {
@@ -54,7 +71,6 @@
   }
 
   .table-item {
-    grid-template-rows: auto auto;
     background-color: #f9f9f9;
     color: #000000;
   }
@@ -65,9 +81,7 @@
   }
 }
 .table-item.open {
-  grid-template-rows: auto auto;
   background-color: #f9f9f9;
-  /* при светлом фоне делаем текст темнее */
   color: #000000;
 }
 
@@ -88,9 +102,6 @@
   grid-column: 5;
   display: flex;
   gap: 8px;
-}
-.table-item .actions button {
-  color: inherit;
 }
 
 .table-item .task-list {

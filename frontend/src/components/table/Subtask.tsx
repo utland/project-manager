@@ -5,6 +5,7 @@ import "../../styles/Table.scss";
 import { removeSubtask, updateSubtask } from "../../redux/slices/projectSlice";
 import client from "../../api/client";
 import { useState } from "react";
+import Edit from "./Edit";
 
 interface ISubtaskProps {
     data: ISubtask
@@ -38,12 +39,12 @@ function Subtask({data}: ISubtaskProps) {
 
         dispatch(updateSubtask(data));
       } catch (error: any) {
-        console.log(error)
+        console.log(error);
       };
     }
     
     return (
-      <>
+      <>{isEdit ? <Edit data={data} type="subtask" closeEdit={() => setIsEdit(false)}/> :
         <div className={'table-item open'}>
           <div className="key">{key}</div>
           <div className="name">{name}</div>
@@ -57,6 +58,7 @@ function Subtask({data}: ISubtaskProps) {
               <button className="delete" onClick={handlerDelete}>D</button>
           </div>
         </div>
+        }
       </>
     )
 }
