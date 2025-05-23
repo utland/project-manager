@@ -9,7 +9,7 @@ class TaskService extends Service {
     super();
   }
 
-  async createTask(projectId: string, blockId: number, name: string, id: string): Promise<TaskModel> {
+  async createTask(projectId: string, blockId: number, name: string): Promise<TaskModel> {
     const key = await ProjectService.getKey(this.prismaClient, projectId);
     const task = this.prismaClient.taskModel.create({
       data: {
@@ -17,21 +17,12 @@ class TaskService extends Service {
         name,
         parentProject: {connect: { id: projectId }},
         subtasks: {create: []},
-        ...(id && {user: {connect: {id}}}),
         ...(blockId && {
           parentBlock: { connect: { id: blockId } }
         })
       },
       include: {
         subtasks: true,
-        user: {
-          select: {
-            id: true,
-            photoUrl: true,
-            login: true,
-            name: true
-          }
-        }
       }
     });
 
@@ -71,28 +62,17 @@ class TaskService extends Service {
     return task;
   }
 
-  async updateTask(id: number, projectId: string, name: string, userId: string): Promise<TaskModel> {
+  async updateTask(id: number, projectId: string, name: string): Promise<TaskModel> {
     const task = this.prismaClient.taskModel.update({
       where: {
         id,
         projectId,
       },
       data: {
-        name,
-        user: {
-          connect: {id: userId}
-        }
+        name
       },
       include: {
         subtasks: true,
-        user: {
-          select: {
-            id: true,
-            photoUrl: true,
-            login: true,
-            name: true
-          }
-        }
       }
     });
 

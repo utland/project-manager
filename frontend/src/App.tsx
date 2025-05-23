@@ -30,11 +30,16 @@ function App() {
   return (
     <ModalContext.Provider value={{modal, setModal: (modal: IModal) => setModal(modal), closeModal: () => setModal(null)}}>
       <Routes>
-        <Route path="/" element={<Main/>}>
-          <Route index 
-            element={<Home />}/>
-          <Route path='project/:id' element={<Project />}/>
-        </Route>
+        <Route index element={
+          <Main>
+            <Home />
+          </Main>
+        }/>
+        <Route path='project/:id' element={
+          <Main>
+            <Project />
+          </Main>
+        }/>
   
         <Route path="/" element={<Auth />}>
           <Route path='login' element={<Login/>}/>

@@ -6,25 +6,20 @@ import Status from "../../interfaces/statusSlice";
 import ITask from "../../interfaces/task.model.i";
 import IBlock from "../../interfaces/block.model.i";
 import ISubtask from "../../interfaces/subTask.model.i";
-import { memoize } from "../../utils/memoize";
 
-interface IUserConfig {
+interface IProjectConfig {
     project: IProject,
-    status: Status,
+    status: Status | null;
 }
-
-const findState = (arr: any[], id: number) => arr.find(item => item.id === id);
-
-const memoizedFind = memoize(findState);
 
 export const fetchProject = createAsyncThunk("users/fetchproject", async (id: string) => {
     const { data } = await client.get(`/project/${id}`);
     return data;
 })
 
-const initialState: IUserConfig = {
+const initialState: IProjectConfig = {
     project: nullProject,
-    status: "loading",
+    status: null,
 }
 
 const projectSlice = createSlice({

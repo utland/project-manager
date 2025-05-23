@@ -19,12 +19,10 @@ model UserModel {
   password String
   name String
   email String
-  info String
+  info String @db.Text
   projects ProjectModel[] @relation("UserToProject")
   invited ProjectModel[] @relation("Invites")
-  photoUrl String @default("https://icons.veryicon.com/png/o/miscellaneous/common-icons-31/default-avatar-2.png")
-  blocks BlockModel[]
-  tasks TaskModel[]
+  photoUrl String @default("")
 }
 
 model ProjectModel {
@@ -32,7 +30,7 @@ model ProjectModel {
   globalKey Int @default(1)
   date DateTime @default(now())
   name String
-  description String
+  description String @db.Text
   adminId String
   users UserModel[] @relation("UserToProject")
   invites UserModel[] @relation("Invites")
@@ -49,7 +47,6 @@ model BlockModel {
   status Status @default(ToDo)
   projectId String
   parentProject ProjectModel @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  users UserModel[]
 }
 
 model TaskModel {
@@ -59,11 +56,9 @@ model TaskModel {
   subtasks SubtaskModel[]
   status Status @default(ToDo)
   projectId String
-  userId String?
   parentProject ProjectModel @relation(fields: [projectId], references: [id], onDelete: Cascade)
   blockId Int?
   parentBlock BlockModel? @relation(fields: [blockId], references: [id], onDelete: Cascade)
-  user UserModel? @relation(fields: [userId], references: [id])
 }
 
 model SubtaskModel {

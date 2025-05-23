@@ -38,8 +38,8 @@ function ModalInfo() {
     <>
       <h2>Update project</h2>
       <form onSubmit={handleSubmitSave}>
-        <input name="name" defaultValue={name}/>
-        <input name="desc" defaultValue={description}/>
+        <input name="name" defaultValue={name} autoComplete="off" placeholder="Name" maxLength={18}/>
+        <textarea name="desc" rows={3} placeholder="Description" maxLength={150} defaultValue={description}/>
         <button type="submit">Save</button>
       </form>
     </>

@@ -57,11 +57,11 @@ function ModalHome({ type }: ModalProps) {
         <form onSubmit={type === "create" ? handleSubmitCreate : handleSubmitJoin}>
           {type === "create" ?
           <>
-            <input placeholder="Project Name" name="name"/>
-            <input placeholder="Description" name="description"/>
+            <input placeholder="Project Name" name="name" autoComplete="off" maxLength={18}/>
+            <textarea id="auto-textarea" rows={3} placeholder="Description" name="description" maxLength={150}></textarea>
           </>
           : 
-          <input placeholder={"Invite Code"} name="invite"/>}
+          <input placeholder={"Invite Code"} name="invite" autoComplete="off"/>}
           <button type="submit">{type === "create" ? "Create" : "Join"}</button>
         </form>
       </>

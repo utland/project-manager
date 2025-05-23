@@ -4,6 +4,8 @@ import "../../styles/Table.scss";
 import { useRef } from "react";
 import client from "../../api/client";
 import { addSubtask, addTask } from "../../redux/slices/projectSlice";
+import { TiDelete } from "react-icons/ti";
+import { FaCheck } from "react-icons/fa";
 
 interface IProps {
     blockId: number | undefined,
@@ -32,10 +34,10 @@ function Proxy({taskId, setProxy, component, blockId}: IProps) {
     
     return (
         <div className="task-proxy">
-          <input type="text" ref={ref}/>
-          <div className="actions">
-                <button className="add" onClick={handlerAdd}>E</button>
-                <button className="delete" onClick={() => setProxy(false)}>D</button>
+          <input type="text" ref={ref} autoFocus/>
+          <div className="proxy-actions">
+                <button className="add" onClick={handlerAdd}><FaCheck /></button>
+                <button className="delete" onClick={() => setProxy(false)}><TiDelete /></button>
             </div>
         </div>
     )

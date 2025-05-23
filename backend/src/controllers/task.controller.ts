@@ -16,8 +16,8 @@ class TaskController extends Controller<TaskService> {
   }
 
   public create = async (req: RequestApi, res: ResponseApi) => {
-    const { projectId, blockId, name, userId } = req.body;
-    const task = await this.service.createTask(projectId, blockId, name, userId);
+    const { projectId, blockId, name} = req.body;
+    const task = await this.service.createTask(projectId, blockId, name);
     res.status(201).json(task);
   };
 
@@ -28,8 +28,8 @@ class TaskController extends Controller<TaskService> {
   };
 
   public update = async (req: RequestApi, res: ResponseApi) => {
-    const { id, projectId, name, userId} = req.body;
-    const updated = await this.service.updateTask(id, projectId, name, userId);
+    const { id, projectId, name} = req.body;
+    const updated = await this.service.updateTask(id, projectId, name);
     res.status(201).json(updated);
   };
 

@@ -16,8 +16,8 @@ class BlockController extends Controller<BlockService> {
   }
 
   public create = async (req: RequestApi, res: ResponseApi) => {
-    const { projectId, description, name, usersId } = req.body;
-    const block = await this.service.createBlock(projectId, name, description, usersId);
+    const { projectId, description, name} = req.body;
+    const block = await this.service.createBlock(projectId, name, description);
     res.status(201).json(block);
   };
 
@@ -28,8 +28,8 @@ class BlockController extends Controller<BlockService> {
   };
 
   public update = async (req: RequestApi, res: ResponseApi) => {
-    const { id, projectId, name, description, usersId } = req.body;
-    const updated = await this.service.updateBlock(id, projectId, name, description, usersId);
+    const { id, projectId, name, description} = req.body;
+    const updated = await this.service.updateBlock(id, projectId, name, description);
     res.status(201).json(updated);
   };
 

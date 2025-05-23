@@ -7,14 +7,12 @@ import { singleton } from "tsyringe";
 import Controller from "./common/controller.js";
 import Service from "./common/service.js";
 import { validateToken}  from "./middleware/validateToken.js";
-import {ServerAPI} from "api-server";
+import {IServerAPI, ServerAPI} from "api-server";
 import AuthProxy from "./proxy/authProxy.js";
-import setCorsWrapper from "./middleware/setCors.js";
 
 @singleton()
 class App {
-  app: ServerAPI;
-  proxy: AuthProxy;
+  app: IServerAPI;
   port: number;
   private controllers: Record<string, Controller<Service>>
 
@@ -25,8 +23,7 @@ class App {
     taskController: TaskController,
     subtaskController: SubtaskController,
   ) {
-    this.app = new ServerAPI();
-    this.proxy = new AuthProxy(this.app);
+    this.app = new AuthProxy(new ServerAPI());
     this.port = 3000;
     this.controllers = {
       user: userController,
@@ -38,7 +35,6 @@ class App {
   }
 
   useMiddlewares() {
-    this.app.use(setCorsWrapper("http://localhost:5173", true));
     this.app.use(validateToken);
   }
 
@@ -49,14 +45,10 @@ class App {
   }
 
   async init(): Promise<void> {
-    this.proxy.useCors("http://localhost:5173", true);
+    this.app.setCors("http://localhost:5173", true);
     this.useRouters();
 
-    // this.app.listen(this.port, () => {
-    //   console.log("Server started at " + this.port);
-    // });
-
-    this.proxy.listen(this.port, () => {
+    this.app.listen(this.port, () => {
       console.log(`Server started at ${this.port}`);
     })
   }

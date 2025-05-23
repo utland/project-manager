@@ -14,15 +14,31 @@ const validateToken = (req: RequestApi, res: ResponseApi, errorHandler: ErrorFn)
   }
 
   const token = authHeader.split(" ")[1];
-  const tokenKey = process.env.SECRET_KEY as string;
+  const secretKey = process.env.SECRET_KEY as string;
 
   try {
-    const payload = jwt.verify(token, tokenKey) as IPayload;
+    const payload = jwt.verify(token, secretKey) as IPayload;
     res.locals.user = payload;
     return ReturnType.OK;
   } catch {
-    return errorHandler({message: "Token is incorrect", status: 402, type: "token"})
+    const refreshRes = refresh(req, res, secretKey);
+    return refreshRes;
   }
 };
+
+const refresh = (req: RequestApi, res: ResponseApi, secretKey: string): ReturnType => {
+    try {
+      const refreshToken = req.cookies['refreshToken'];
+      const decoded = jwt.verify(refreshToken, secretKey) as IPayload;
+      const accessToken = jwt.sign({id: decoded.id, login: decoded.login}, secretKey, {expiresIn: "30m"});
+      res.locals.user = decoded;
+      
+      res.header("Access-Control-Expose-Headers", "Authorization").header('Authorization', accessToken);
+      return ReturnType.OK;
+    } catch (error) {
+      res.status(401).json({message: "Refresh token is expired", status: 401, type: "token"});
+      return ReturnType.ERROR;
+    }
+  }
 
 export { validateToken };

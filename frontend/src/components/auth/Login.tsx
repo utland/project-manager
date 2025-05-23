@@ -2,7 +2,6 @@ import { useState } from "react";
 import client from "../../api/client";
 import "../../styles/Login.scss";
 import IError from "../../interfaces/error.i";
-import IUser from "../../interfaces/user.model.i";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { ThunkDispatch } from "../../interfaces/reduxDefault";
@@ -30,6 +29,7 @@ function Login() {
                 login: login.value,
                 password: password.value
             });
+            
             dispatch(setUser(user.data));
         } catch (error: any) {
             setError(error);

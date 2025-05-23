@@ -1,21 +1,30 @@
-import { Outlet } from "react-router-dom";
-import IUser from "../../interfaces/user.model.i";
 import Header from "../common/Header";
 import { useSelector } from "react-redux";
 import { IRootState } from "../../interfaces/reduxDefault";
+import Loader from "../common/Loader";
+import { ReactNode } from "react";
+import Status from "../../interfaces/statusSlice";
 
-interface IMain {
-    user: IUser
+const getStatus = (status1: Status, status2: Status | null): Status => {
+    if (!status2) return status1;
+    if (status1 === "error" || status2 === "error") return "error";
+    if (status1 === "loading" || status2 === "loading") return "loading";
+    return "completed";
 }
 
-function Main() {
-    const {user} = useSelector((state: IRootState) => state.user);
+function Main({children}: {children: ReactNode}) {
+    const userSlice = useSelector((state: IRootState) => state.user);
+    const projectSlice = useSelector((state: IRootState) => state.user);
+    const status = getStatus(userSlice.status, projectSlice.status);
 
     return (
-        <>
-          <Header user={user} />
-          <Outlet />
-        </>
+        <div className="main">
+          {status === "loading" ? <Loader />:
+          <>
+            <Header user={userSlice.user} />
+            {children}
+          </>}
+        </div>
     )
 }
 

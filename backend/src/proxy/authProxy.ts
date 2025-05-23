@@ -1,49 +1,38 @@
 import { createServer, IncomingMessage, Server, ServerResponse } from "node:http";
 import jwt from "jsonwebtoken";
-import setCorsWrapper from "../middleware/setCors.js";
-import { RequestApi, ResponseApi, ReturnType, ServerAPI, transformParametrs } from "api-server";
-
-type HandlerType = (httpReq: IncomingMessage, httpRes: ServerResponse) => void;
+import { IServerAPI, RequestApi, ResponseApi, ReturnType, Router, ServerAPI, transformParametrs } from "api-server";
+import { IMiddleware } from "../../../../api-server/dist/interfaces/handler.i.js";
 
 interface IPayload {
   login: string;
   id: string;
 }
 
-interface ICorsOptions {
-  originUrl: string, 
-  credentials: boolean
-}
-
-class AuthProxy {
+class AuthProxy implements IServerAPI {
   app: ServerAPI;
-  corsOptions: ICorsOptions;
 
   constructor(app: ServerAPI) {
     this.app = app;
-    this.corsOptions = {
-      originUrl: "*",
-      credentials: false
-    }
   }
+
+  setCors(originUrl: string, credentials: boolean) {
+    this.app.corsOptions = {originUrl, credentials};
+  };
 
   listen(port: number, callback: () => void) {
     this.app.setListener(this.handler.bind(this));
     this.app.listen(port, callback);
   }
 
-  useCors(originUrl: string, credentials: boolean) {
-    this.corsOptions = {
-      originUrl,
-      credentials
-    };
+  useRouter(path: string, router: Router): void {
+    this.app.useRouter(path, router);
   }
 
-  private handler(req: RequestApi, res: ResponseApi) {
-    const {originUrl, credentials} = this.corsOptions;
-    const reply = setCorsWrapper(originUrl, credentials)(req, res);
-    if (reply !== ReturnType.OK) return;
+  use(callback: IMiddleware) {
+    this.app.middlewares.push(callback);
+  }
 
+  handler(req: RequestApi, res: ResponseApi) {
     const authHeader = req.headers.authorization as string;
 
     if (req.path === "/user/login" || req.path === "/user/register") {
@@ -72,7 +61,7 @@ class AuthProxy {
     try {
       const refreshToken = req.cookies['refreshToken'];
       const decoded = jwt.verify(refreshToken, secretKey) as IPayload;
-      const accessToken = jwt.sign({id: decoded.id, login: decoded.login}, secretKey, {expiresIn: "30m"});
+      const accessToken = jwt.sign({id: decoded.id, login: decoded.login}, secretKey, {expiresIn: "5m"});
       res.locals.user = decoded;
       
       res.header("Access-Control-Expose-Headers", "Authorization").header('Authorization', accessToken);

@@ -8,6 +8,10 @@ import { removeBlock, updateBlock } from "../../redux/slices/projectSlice";
 import { useState } from "react";
 import Proxy from "./Proxy";
 import Edit from "./Edit";
+import { FaEdit, FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
+import { MdDeleteForever } from "react-icons/md";
+import Status from "../../interfaces/status.i";
+import getStatusStyle from "../../utils/getStatusStyle";
 
 
 interface IBlockProps {
@@ -51,7 +55,7 @@ function Block({data, isEditable = false}: IBlockProps) {
     return (
       <>
         {isEdit ? <Edit data={data} type="block" closeEdit={() => setIsEdit(false)} desc={description}/> :
-          <div className={isTasks ? 'table-item open' : 'table-item'}>
+          <div className={`table-item ${isTasks ? 'open' : ''} ${getStatusStyle(status)}`}>
             <div className="key">{key}</div>
             <div className="info">
               <div className="name">{name}</div>
@@ -63,10 +67,10 @@ function Block({data, isEditable = false}: IBlockProps) {
               <option value={"Done"}>Done</option>
             </select>
             <div className="actions">
-              <button className="edit" onClick={() => setIsEdit(true)}>E</button>
-              <button className="delete" onClick={handlerDelete}>D</button>
+              <button  className="edit" onClick={() => setIsEdit(true)}><FaEdit /></button>
+              <button className="delete" onClick={handlerDelete}><MdDeleteForever /></button>
               <button className="toggle" onClick={() => setIsTasks(!isTasks)}>
-                {isTasks ? "↓" : "↑"}
+                {isTasks ? <FaLongArrowAltDown /> : <FaLongArrowAltUp />}
               </button>
             </div>
             {isTasks && 

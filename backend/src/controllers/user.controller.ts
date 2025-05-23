@@ -50,7 +50,7 @@ class UserController extends Controller<UserService> {
       return error({message: "Password is wrong", status: 406, type: "password"})
     } else {
       const secretKey = process.env.SECRET_KEY as string;
-      const accessToken = jwt.sign({ id: user.id, login }, secretKey, { expiresIn: "30m" });
+      const accessToken = jwt.sign({ id: user.id, login }, secretKey, { expiresIn: "5m" });
       const refreshToken = jwt.sign({ id: user.id, login }, secretKey, { expiresIn: "1h" });
 
       const { password, ...others } = user;
@@ -64,7 +64,6 @@ class UserController extends Controller<UserService> {
 
   public getUser = async (req: RequestApi, res: ResponseApi, error: ErrorFn) => {
     const { id } = res.locals.user;
-    const userKey = `getUser - ${id}`;
 
     const user: UserModel | null = await this.service.getUser(id);
     if (!user) {

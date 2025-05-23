@@ -1,6 +1,6 @@
 import IProject from "../../interfaces/project.model.i";
 import { router } from "../../main";
-import "../../styles/ProjectCard.scss";
+import "../../styles/Project.scss";
 
 interface propsType {
     data: IProject

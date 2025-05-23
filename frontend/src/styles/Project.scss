@@ -1,5 +1,4 @@
 @use "./common/variables.scss" as *;
-@use "./common/mixin.scss" as *;
 
 .project-page {
   display: flex;
@@ -7,7 +6,6 @@
   height: 100vh;
   background-color: $color-bg;
   color: $color-text;
-
   
   .request-list {
     display: flex;
@@ -28,8 +26,13 @@
     .user-photo {
       width: 50px;
       height: 50px;
+      display: block;
+      background-color: #ccc;
       border-radius: 50%;
-      object-fit: cover;
+
+      img {
+        width: 100%;
+      }
     }
     
     .item-info {
@@ -131,32 +134,66 @@
     }
 
     .project-info {
+      width: 100%;
+      white-space: normal;
+      overflow: hidden;
+      overflow-wrap: break-word;
       padding: 0 20px;
+      font-size: 27px;
+
+      .progress-bar {
+        margin-top: 20px;
+        margin-bottom: 30px;
+
+        .line {
+          height: 20px;
+          border-radius: 40px;
+        }
+
+        .main-line {
+          width: 100%;
+          margin-top: 10px;
+          position: relative;
+          background-color: #ccc;
+          z-index: 1;
+  
+          .done-line {
+            position: absolute;
+            background-color: #4caf50;
+            z-index: 3;
+          }
+
+          .progress-line {
+            position: absolute;
+            background-color: #09b8e8;
+            z-index: 2;
+          }
+        }
+      }
+
 
       .project-text {
-        font-weight: bold;
+        display: block;
+        text-overflow: ellipsis;
+        max-width: 100%;
+        margin: 10px 0;
       }
     }
     
     .user-list {
+      display: flex;
+      gap: 20px;
       .user-card {
-        position: relative;
         display: grid;
         grid-template-columns: 70px 120px auto;
         align-items: center;
         column-gap: 10px;
-        font-size: 16px;
-        width: 250px;
+        font-size: 18px;
+        width: 270px;
         margin: 20px 0;
         padding: 5px;
         border-radius: 10px;
         background-color: $color-border;
-
-        .mini-modal {
-          right: 0;
-          top: -20px;
-          position: absolute;
-        }
         
         .user-photo {
           width: 50px;
@@ -164,12 +201,10 @@
 
         .user-card-button {
           color: #fff;
-          width: 20px;
-          padding: 10px;
-          display: flex;
-          justify-content: center;
-          border: none;
-          background-color: $color-surface;
+          display: inline;
+          width: 35px;
+          height: 35px;
+          cursor: pointer;
 
           &:hover {
             opacity: 0.7;
@@ -190,7 +225,10 @@
     border-bottom: 1px solid $color-border;
 
     button {
-      background-color: $color-accent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: $color-bg;
       color: white;
       border: none;
       width: 50px;
@@ -198,10 +236,6 @@
       font-size: 30px;
       border-radius: $border-radius;
       cursor: pointer;
-
-      &:hover {
-        background-color: lighten($color-accent, 10%);
-      }
     }
   }
 

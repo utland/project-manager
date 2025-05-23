@@ -4,6 +4,7 @@ import { IRootState, ThunkDispatch } from '../../interfaces/reduxDefault';
 import { useState } from 'react';
 import client from '../../api/client';
 import { setUsers } from '../../redux/slices/projectSlice';
+import { MdOutlineDeleteOutline } from 'react-icons/md';
 
 interface IUserCardProps {
     userCard: IUser,
@@ -15,7 +16,7 @@ function UserCard({userCard}: IUserCardProps) {
     const {user} = useSelector((state: IRootState) => state.user);
     const { project } = useSelector((state: IRootState) => state.project);
     const dispatch = useDispatch<ThunkDispatch>();
-    const [miniModal, setMiniModal] = useState<boolean>(false);
+    const [img, setImg] = useState(photoUrl || "/avatar.png");
     
     const handleDelete = async () => {
         try {
@@ -32,18 +33,15 @@ function UserCard({userCard}: IUserCardProps) {
 
     return (
         <div className="user-card">
-            {miniModal ? 
-            <div className="mini-modal">
-                <button name='delete' onClick={handleDelete}>Delete</button>
-            </div> : ""}
             <div className="user-photo">
-                <img src={photoUrl ? photoUrl : "/avatar.png"} className="user-photo" />
+                <img src={img} className="user-photo" onError={() => setImg("/avatar.png")}/>
             </div>
             <div className="item-info">
               <p className="user-name">{name}</p>
               <p className="user-login">@{login}</p>
             </div>
-            {user.id !== id ? <button className='user-card-button' onClick={() => setMiniModal(!miniModal)}>︙</button> : ""}
+            {user.id !== id && user.id === project.adminId ? 
+            <MdOutlineDeleteOutline onClick={handleDelete} className='user-card-button'/> : ""}
         </div>
     );
 };

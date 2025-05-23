@@ -1,17 +1,25 @@
 @use "./common/variables.scss" as *;
-@use "./common/mixin.scss" as *;
 
 .register-container {
-  @include center-flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
   background-color: $color-bg;
 
   .register-box {
-    background-color: $color-surface;
+    text-align: center;
+    background-color: $color-modal;
     padding: $padding * 2;
     border-radius: $border-radius;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    width: 300px;
+    width: 600px;
+
+    .register-block {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+    }
 
     h2 {
       text-align: center;
@@ -23,18 +31,7 @@
     }
 
     button {
-      width: 100%;
-      padding: $padding / 2;
-      background-color: $color-accent;
-      border: none;
-      border-radius: $border-radius;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-
-      &:hover {
-        background-color: lighten($color-accent, 10%);
-      }
+      margin-bottom: 10px;
     }
   }
 }

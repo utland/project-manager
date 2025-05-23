@@ -10,7 +10,7 @@ class BlockService extends Service {
     super();
   }
 
-  async createBlock(projectId: string, name: string, description: string, usersId: string[]): Promise<BlockModel> {
+  async createBlock(projectId: string, name: string, description: string): Promise<BlockModel> {
     const key = await ProjectService.getKey(this.prismaClient, projectId);
     const block = this.prismaClient.blockModel.create({
       data: {
@@ -21,21 +21,9 @@ class BlockService extends Service {
         parentProject: {
           connect: { id: projectId },
         },
-        ...(usersId ? 
-          {users: { connect: usersId.map(id => ({ id })) }} :
-          {users: { create: [] }}
-        )
       },
       include: {
         tasks: true,
-        users: {
-          select: {
-            id: true,
-            photoUrl: true,
-            login: true,
-            name: true
-          }
-        }
       }
     });
 
@@ -68,7 +56,11 @@ class BlockService extends Service {
         status,
       },
       include: {
-        tasks: true
+        tasks: {
+          include: {
+            subtasks: true
+          }
+        }
       }
     });
 
@@ -79,8 +71,7 @@ class BlockService extends Service {
     id: number,
     projectId: string,
     name: string,
-    description: string,
-    usersId: string[]
+    description: string
   ): Promise<BlockModel> {
     const block = this.prismaClient.blockModel.update({
       where: {
@@ -89,19 +80,12 @@ class BlockService extends Service {
       },
       data: {
         name,
-        description,
-        users: {
-          connect: usersId.map(id => ({ id })),
-        }
+        description
       },
       include: {
-        tasks: true,
-        users: {
-          select: {
-            id: true,
-            photoUrl: true,
-            login: true,
-            name: true
+        tasks: {
+          include: {
+            subtasks: true
           }
         }
       }

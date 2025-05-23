@@ -24,7 +24,7 @@ function ModalDelete() {
   return (
     <>
       <h2>Are you sure to delete this project</h2>
-      <div>
+      <div className="delete-project">
         <button type="submit" onClick={handleDelete}>Yes</button>
         <button onClick={closeModal}>No</button>
       </div>

@@ -3,6 +3,7 @@ import client from "../../api/client";
 import { router } from "../../main";
 import "../../styles/Register.scss"
 import IError from "../../interfaces/error.i";
+import { NavLink } from "react-router-dom";
 
 function Register() {
     if (localStorage.getItem("token")) window.location.href = "/";
@@ -24,7 +25,7 @@ function Register() {
         if (!email.value) return setError({message: "Empty email", type: "email"});
         
         try {
-            const user = await client.post("/user/register", {
+            await client.post("/user/register", {
                 login: login.value,
                 password: password.value,
                 name: name.value,
@@ -39,39 +40,42 @@ function Register() {
     }
 
     return(
-        <div className="login-container">
-            <div className="login-box">
+        <div className="register-container">
+            <div className="register-box">
                 {error ? <h2>{error.message}</h2> : ""}
                 <form action="" onSubmit={handleSubmit}>
-                    <input 
-                    type="text" 
-                    name="login" 
-                    placeholder="Login" 
-                    autoComplete="off" 
-                    className={`${error?.type === "login" ? "red" : ""}`}
-                    />
-                    <input 
-                    type="password" 
-                    name="password" 
-                    placeholder="Password" 
-                    autoComplete="off" 
-                    className={`${error?.type === "password" ? "red" : ""}`}
-                    />
-                    <input 
-                    type="text" 
-                    name="name" 
-                    placeholder="Your name" 
-                    autoComplete="off" 
-                    className={`${error?.type === "name" ? "red" : ""}`}
-                    />
-                    <input 
-                    type="email" 
-                    name="email" 
-                    placeholder="Your email" 
-                    autoComplete="off" 
-                    className={`${error?.type === "email" ? "red" : ""}`}
-                    />
+                    <div className="register-block">
+                        <input 
+                        type="text" 
+                        name="login" 
+                        placeholder="Login" 
+                        autoComplete="off" 
+                        className={`${error?.type === "login" ? "red" : ""}`}
+                        />
+                        <input 
+                        type="password" 
+                        name="password" 
+                        placeholder="Password" 
+                        autoComplete="off" 
+                        className={`${error?.type === "password" ? "red" : ""}`}/>
+                    </div>
+                    <div className="register-block">
+                        <input 
+                        type="text" 
+                        name="name" 
+                        placeholder="Your name" 
+                        autoComplete="off" 
+                        className={`${error?.type === "name" ? "red" : ""}`}
+                        />
+                        <input 
+                        type="email" 
+                        name="email" 
+                        placeholder="Your email" 
+                        autoComplete="off" 
+                        className={`${error?.type === "email" ? "red" : ""}`}/>
+                    </div>
                     <button type="submit">Register</button>
+                    <NavLink to={"/login"} className="link">Log In</NavLink>
                 </form>
             </div>
         </div>

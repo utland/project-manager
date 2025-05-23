@@ -8,6 +8,9 @@ import { removeTask, updateTask } from "../../redux/slices/projectSlice";
 import Subtask from "./Subtask";
 import TaskProxy from "./Proxy";
 import Edit from "./Edit";
+import { FaEdit, FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
+import { MdDeleteForever } from "react-icons/md";
+import getStatusStyle from "../../utils/getStatusStyle";
 
 interface ITaskProps {
     data: ITask,
@@ -49,8 +52,9 @@ function Task({data}: ITaskProps) {
     }
     
     return (
-      <>{isEdit ? <Edit data={data} type="task" closeEdit={() => setIsEdit(false)}/> :
-        <div className={isTasks ? 'table-item open' : 'table-item'}>
+      <>
+      {isEdit ? <Edit data={data} type="task" closeEdit={() => setIsEdit(false)}/> :
+        <div className={`table-item task-item ${isTasks ? 'open' : ''} ${getStatusStyle(status)}`}>
           <div className="key">{key}</div>
           <div className="name">{name}</div>
           <select id="status" value={status} onChange={(e) => handlerStatus(e.target.value)}>
@@ -59,10 +63,10 @@ function Task({data}: ITaskProps) {
             <option value={"Done"}>Done</option>
           </select>
           <div className="actions">
-              <button className="edit" onClick={() => setIsEdit(true)}>E</button>
-              <button className="delete" onClick={handlerDelete}>D</button>
+              <button  className="edit" onClick={() => setIsEdit(true)}><FaEdit /></button>
+              <button className="delete" onClick={handlerDelete}><MdDeleteForever /></button>
               <button className="toggle" onClick={() => setIsTasks(!isTasks)}>
-                  {isTasks ? "↓" : "↑"}
+                {isTasks ? <FaLongArrowAltDown /> : <FaLongArrowAltUp />}
               </button>
           </div>
           {isTasks && 

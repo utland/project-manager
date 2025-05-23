@@ -11,18 +11,20 @@ function Home() {
     const {user} = useSelector((state: IRootState) => state.user);
 
     return(
-    <div className="main-page">
-        <Modal />
-        <div className="content">
-            <div className="actions">
-                <button id="create" onClick={() => setModal("create")}>Create</button>
-                <button id="join" onClick={() => setModal("join")}>Join</button>
-            </div>
-            <div className="project-list">
-                {user.projects.map((item) => <ProjectCard data={item}/>)}
+    <>
+        <div className="main-page">
+            <Modal />
+            <div className="content">
+                <div className="actions">
+                    <button id="create" onClick={() => setModal("create")}>Create</button>
+                    <button id="join" onClick={() => setModal("join")}>Join</button>
+                </div>
+                <div className="project-list">
+                    {user.projects.map((item) => <ProjectCard data={item}/>)}
+                </div>
             </div>
         </div>
-    </div>
+    </>
     )
 }
 

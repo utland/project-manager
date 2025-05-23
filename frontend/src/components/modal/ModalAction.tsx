@@ -44,7 +44,7 @@ function ModalAction({ type }: ModalProps) {
         <>
           <h2>Add user</h2>
           <form onSubmit={handleSubmitAdd}>
-            <input placeholder="Login of user" name="login" />
+            <input placeholder="Login of user" name="login" autoComplete="off"/>
 
             <button type="submit">Add User</button>
           </form>

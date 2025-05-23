@@ -1,5 +1,4 @@
 @use "./common/variables.scss" as *;
-@use "./common/mixin.scss" as *;
 
 .main-page {
   display: flex;
@@ -80,12 +79,17 @@
       gap: $padding;
 
       .project-card {
-        background-color: $color-surface;
+        font-size: 20px;
+        background-color: rgb(210, 208, 208);
         border: 1px solid $color-border;
         border-radius: $border-radius;
-        padding: $padding;
+        padding: 10px;
+        overflow: hidden;
         transition: transform 0.2s ease;
-
+        cursor: pointer;
+        height: 150px;
+        color: black;
+        
         &:hover {
           transform: scale(1.02);
         }
@@ -93,11 +97,21 @@
         h3 {
           margin-bottom: 8px;
         }
-
+  
         p {
-          color: $color-muted;
-          font-size: 14px;
+          overflow: hidden;
+          --lines: 4;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: var(--lines);
+          display: box;
+          box-orient: vertical;
+          line-clamp: var(--lines);
+          white-space: normal;
+          overflow-wrap: break-word;
+          font-size: 16px;
         }
+      
       }
     }
   }

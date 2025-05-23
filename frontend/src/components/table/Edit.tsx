@@ -6,6 +6,8 @@ import ISubtask from "../../interfaces/subTask.model.i";
 import ITask from "../../interfaces/task.model.i";
 import { updateBlock, updateSubtask, updateTask } from "../../redux/slices/projectSlice";
 import "../../styles/Table.scss";
+import { TiDelete } from "react-icons/ti";
+import { FaCheck } from "react-icons/fa";
 
 type IComponent = "block" | "task" | "subtask";
 
@@ -47,16 +49,17 @@ function Edit({data, type, desc, closeEdit}: IProps) {
         closeEdit();
     }
 
+    console.log(type)
     return(
     <form className={'edit-row open table-item'} onSubmit={handlerUpdate}>
         <div className="key">{key}</div>
         <div className="info">
-            <input className="name" defaultValue={name} name="name"/>
-            {desc && <input className="desc" defaultValue={desc} name={"desc"}/>}
+            <input className="name" defaultValue={name} name="name" autoFocus/>
+            {type === "block" ? <input className="desc" defaultValue={desc} name={"desc"}/> : ""}
         </div>
         <div className="actions">
-            <button className="save" type="submit">S</button>
-            <button className="cancel" onClick={closeEdit}>C</button>
+            <button className="save" type="submit"><FaCheck /></button>
+            <button className="cancel" onClick={closeEdit}><TiDelete /></button>
         </div>
     </form>
     )

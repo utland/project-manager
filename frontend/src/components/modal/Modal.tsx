@@ -5,7 +5,7 @@ import ModalHome from "./ModalHome";
 import { useContext } from "react";
 import ModalContext from "../../context/ModalContext";
 import ModalDelete from "./ModalDelete";
-import ModalAddBlock from "./ModalAddBlock";
+import ModalAddItem from "./ModalAddItem";
 
 const modalsElement = {
     "add": <ModalAction type="add"/>,
@@ -14,7 +14,7 @@ const modalsElement = {
     "create": <ModalHome type="create"/>,
     "join": <ModalHome type="join"/>,
     "delete": <ModalDelete />,
-    "addBlock": <ModalAddBlock />,
+    "addBlock": <ModalAddItem />,
 }
   
 function Modal() {
@@ -22,8 +22,8 @@ function Modal() {
     if (!modal) return;
 
     return (
-      <div className="modal-overlay" onClick={closeModal}>
-        <div className="modal" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-overlay">
+        <div className="modal">
             {modalsElement[modal] ?? ""}
           <button className="close-btn" onClick={closeModal}>×</button>
         </div>

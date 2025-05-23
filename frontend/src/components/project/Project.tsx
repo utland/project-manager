@@ -8,6 +8,10 @@ import Modal from "../modal/Modal";
 import ModalContext from "../../context/ModalContext";
 import ProjectInfo from "./ProjectInfo";
 import Table from "../table/Table";
+import { MdDeleteForever } from "react-icons/md";
+import { FaBell, FaInfo } from "react-icons/fa6";
+import { IoPersonAdd } from "react-icons/io5";
+import Loader from "../common/Loader";
 
 type idProject = {
     id: string
@@ -34,11 +38,12 @@ function Project() {
         <div className="project-page">
             <Modal />
 
-            {user.id === project.adminId ? <div className="project-actions">
-                <button className="add-user" onClick={() => setModal("add")}>+</button>
-                <button className="users" onClick={() => setModal("requests")}>0</button>
-                <button className="advanced-info" onClick={() => setModal("info")}>I</button>
-                <button className="delete" onClick={() => setModal("delete")}>D</button>
+            {user.id === project.adminId ? 
+            <div className="project-actions">
+                <button className="add-user" onClick={() => setModal("add")}><IoPersonAdd /></button>
+                <button className="users" onClick={() => setModal("requests")}><FaBell /></button>
+                <button className="advanced-info" onClick={() => setModal("info")}><FaInfo /></button>
+                <button className="delete" onClick={() => setModal("delete")}><MdDeleteForever /></button>
             </div> : ""}
             <div className="project-main">
                 <div className="window-switch">
@@ -56,7 +61,7 @@ function Project() {
                 </div>
                 {window === "info" ? <ProjectInfo /> : <Table />}
             </div>
-        </div>) : "This project is not found"
+        </div>) : <Loader />
     )
 }
 

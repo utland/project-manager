@@ -1,103 +1,153 @@
 /* Основной контейнер таблицы */
 .table {
   width: 100%;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  .add-row {
+    width: 100px;
+    border: none;
+    background-color: #969494;
+    color: #fff;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 6px 0;
+    border-radius: 0 0 8px 8px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .add-row:hover {
+    opacity: 0.7;
+  }
 }
 
-/* Кнопка добавления блока снизу */
-.add-row {
-  width: 100%;
-  border: none;
-  background-color: #2a7ade;
-  color: #fff;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 12px 0;
-  border-radius: 0 0 8px 8px;
-  transition: background-color 0.2s ease;
-}
-.add-row:hover {
-  background-color: #1f5cbf;
-  /* если фон становится темнее, текст остается белым */
-  color: #fff;
-}
-
-/* Список блоков */
 .list {
   border: 1px solid #ddd;
   border-radius: 8px 8px 0 0;
   overflow: hidden;
 }
 
-/* Блок: шапка и задачи */
 .edit-row {
-  grid-template-columns: 50px 1fr auto;
+  grid-template-columns: 50px 400px 800px auto;
   grid-template-rows: auto;
   align-items: center;
   gap: 10px;
   align-items: center;
+  box-sizing: border-box;
 
   input {
-    background-color: #f9f9f9;
+    background-color: #cbcbcb;
     color: #000000;
     outline: none;
-    font-size: 18px;
+    font-size: 20px;
     margin: 0;
     padding: 0;
     border: none;
+    padding: 5px;
   }
 }
 
 .table-item {
-  font-size: 18px;
+  font-size: 20px;
   display: grid;
-  grid-template-columns: 50px 1fr 100px auto;
+  grid-template-columns: 50px 1fr 120px auto;
   gap: 10px;
   grid-template-rows: auto;
   align-items: center;
   padding: 12px 16px;
-  border: 1px solid #eee;
+  border: 2px solid #b2b0b0;
   color: #ffffff;
+
+  div {
+    padding: 5px;
+  }
 
   .info {
     display: grid;
-    grid-template-columns: 3fr 7fr;
+    gap: 20px;
+    grid-template-columns: 400px 800px;
     align-items: center;
   }
-
+  
+  .actions {
+    button {
+      background-color: #000000;
+      border: none;
+      padding: 0;
+      
+      * {
+        width: 30px;
+        height: 30px;
+        color: white;
+        cursor: pointer;
+      }
+      
+      *:hover {
+        opacity: 0.7;
+      }
+    }
+  }
+  
   .desc {
     width: 400px;
   }
-
+  
   .table-item {
+    padding: 12px 16px;
+    grid-template-columns: 50px 1fr auto;
     background-color: #f9f9f9;
     color: #000000;
-  }
 
+    .table-item {
+      padding: 12px 16px;
+    }
+  }
+  
   #status {
     margin: 0px;
     align-items: center;
   }
 }
+
 .table-item.open {
   background-color: #f9f9f9;
   color: #000000;
+
+  .actions {
+    button {
+      background-color: #f9f9f9;;
+      
+      * {
+        color: rgb(0, 0, 0);
+        cursor: pointer;
+      }
+    }
+  }
 }
 
-/* Шапка блока */
+.table-item.done {
+  border-color: rgb(114, 207, 22);
+}
+
+.table-item.in-process {
+  border-color: #2a7ade;
+}
+
 .table-item .key {
   grid-column: 1;
   font-weight: bold;
 }
+
 .table-item .info {
+  padding: 0;
   grid-column: 2;
 }
+
 .table-item .status {
   grid-column: 3;
   font-size: 13px;
   text-transform: uppercase;
 }
+
 .table-item .actions {
   grid-column: 5;
   display: flex;
@@ -111,32 +161,9 @@
   margin-top: 8px;
   padding-left: 20px;
 }
+
 .table-item.open .task-list {
   display: flex;
-}
-
-.table-item .task-item {
-  display: flex;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
-  color: #333;
-}
-.table-item.open .task-item {
-  color: #111;
-}
-.table-item .task-item .name {
-  flex: 1;
-  font-weight: 500;
-}
-.table-item .task-item .status {
-  width: 100px;
-  font-size: 13px;
-  text-transform: uppercase;
-}
-.table-item .task-item .actions {
-  display: flex;
-  gap: 8px;
 }
 
 .task-proxy {
@@ -147,14 +174,30 @@
   background-color: #f0f0f0;
 
   input {
+    font-size: 20px;
     align-items: center;
     padding: 6px 8px;
     border: 1px solid #ccc;
     border-radius: 4px;
     margin-top: 10px;
-    font-size: 14px;
     color: #000000;
     background-color: #f0f0f0;
+  }
+
+  .proxy-actions {
+    display: flex;
+
+    button {
+      color: #000000;
+      border: none;
+      background-color: #f0f0f0;
+
+      * {
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+      }
+    }
   }
 }
 
@@ -192,30 +235,13 @@
   display: flex;
   gap: 8px;
 }
-
-button {
-  border: none;
-  background: none;
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: 4px;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-  font-size: 14px;
-  color: inherit;
-}
-button:hover {
-  background-color: rgba(0,0,0,0.05);
-}
-button.edit {
+button .edit {
   color: #2a7ade;
 }
-button.delete {
+button .delete {
   color: #d9534f;
 }
-button.toggle {
+button .toggle {
   font-size: 16px;
   transform: rotate(0deg);
-}
-.block-item.open button.toggle {
-  transform: rotate(180deg);
 }

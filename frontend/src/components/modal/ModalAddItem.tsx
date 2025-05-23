@@ -3,16 +3,16 @@ import "../../styles/Modal.scss";
 import "../../styles/Project.scss";
 import { IRootState, ThunkDispatch } from "../../interfaces/reduxDefault";
 import { useDispatch, useSelector } from "react-redux";
-import { addBlock, setInvites, setUsers } from "../../redux/slices/projectSlice";
+import { addBlock, addTask } from "../../redux/slices/projectSlice";
 import { useContext, useState } from "react";
 import ModalContext from "../../context/ModalContext";
   
-type IComponent = "task" | "block"; 
+type IType = "task" | "block"; 
 
-function ModalAddBlock() {
+function ModalAddItem() {
     const dispatch = useDispatch<ThunkDispatch>();
     const {closeModal} = useContext(ModalContext);
-    const [component, setComponent] = useState<IComponent>("block");
+    const [type, setType] = useState<IType>("block");
     const { project } = useSelector((state: IRootState) => state.project)
 
     const handleSubmitAdd = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -30,9 +30,9 @@ function ModalAddBlock() {
             })
           }
 
-          const {data} = await client.post(`/${component}`, body);
+          const {data} = await client.post(`/${type}`, body);
 
-          dispatch(addBlock(data));
+          dispatch(type === "block" ? addBlock(data) : addTask(data));
           closeModal();
         } catch (error: any) {
           console.log(error)
@@ -42,18 +42,17 @@ function ModalAddBlock() {
     return (
       <>
         <h2>Create new cmponent</h2>
-        <select id="cities" onChange={(e) => setComponent(e.currentTarget.value as IComponent)}>
+        <select id="cities" onChange={(e) => setType(e.currentTarget.value as IType)}>
           <option value="block">Block</option>
           <option value="task">Task</option>
         </select>
-        <button></button>
         <form onSubmit={handleSubmitAdd}>
-          <input placeholder="Name" name="name" autoComplete="off"/>
-          {component === "block" ? <input placeholder="Description" name="desc" autoComplete="off"/> : ""}
-          <button type="submit">Add {component}</button>
+          <input placeholder="Name" name="name" autoComplete="off" maxLength={20}/>
+          {type === "block" ? <textarea rows={2} placeholder="Description" name="desc" autoComplete="off" maxLength={80}/> : ""}
+          <button type="submit">Add {type}</button>
         </form>
       </>
     );
 };
   
-  export default ModalAddBlock;
+  export default ModalAddItem;
